@@ -21,7 +21,7 @@ Usage
 
 Settings
 ========
-Settings are stored in `widgets/config.js` on the server (not included in the repo). You can make your own version for local testing by filling in the missing parts of `widgets/config_sample.js` with your own API keys. Don't use the versions we use in production or we'll hit rate limits very quickly! Check the [Services README](blob/master/README_SERVICES.md) for details.
+Settings are stored in `widgets/config.js` on the server (not included in the repo). You can make your own version for local testing by filling in the missing parts of `widgets/config_sample.js` with your own API keys. Don't use the versions we use in production or we'll hit rate limits very quickly! Check the [Services README](https://github.com/DoSomething/Dashboard/blob/master/README_SERVICES.md) for details.
 
 Basic Structure
 ===============
