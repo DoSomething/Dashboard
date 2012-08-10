@@ -1,0 +1,189 @@
+/* reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del,
+dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub,
+sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 14px;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+
+:focus {outline: 0;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+table {border-collapse: separate; border-spacing: 0;}
+caption, th, td {text-align: left; font-weight: normal;}
+blockquote:before, blockquote:after,q:before, q:after {content: "";}
+blockquote, q {quotes: "" "";}
+
+/* basics */
+
+/* 13458d */
+
+body {
+  background: #1b1b1b;
+  color: #fff;
+  padding: 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 960px;
+  margin: 0 auto;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+p {
+  margin-bottom: 0.5em;
+  line-height: 1.3em;
+}
+
+a {
+  font-size: 1em;
+  color: #00B7FF;
+}
+
+.url {
+  font-size: 1em;
+  font-family: Menlo, Consolas, Monaco, "Lucida Console", monospace;
+  color: #999;
+}
+
+strong {
+  font-size: 1em;
+  color: #000;
+}
+
+ul {
+  padding-left: 32px;
+  line-height: 2em;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
+/* general elements */
+
+.preview_container {
+  width: 960px;
+  height: 430px;
+}
+
+.preview {
+  display: block;
+  position: relative;
+  text-align: center;
+  bottom: 0;
+  opacity: 1;
+  background: url('images/preview.png') no-repeat top center;
+  width: 960px;
+  height: 960px;
+}
+
+.container {
+  position: relative;
+  top: -5px;
+  background: #fff;
+  color: #333;
+  margin: 0 10px 30px;
+  padding: 30px 0 0;
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);  
+}
+
+h1 {
+  font-family: "din-web-reg", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: #000;
+  font-size: 3.2em;
+  font-weight: 600;
+  padding: 0.5em 1em 1em;
+  line-height: 1.2em;
+}
+
+.feature {
+  padding-left: 200px;
+  padding-right: 65px;
+  margin-bottom: 3em;
+  background: transparent no-repeat 96px 50%;
+}
+
+.members {background-image: url('images/members.png')}
+.weather {background-image: url('images/weather.png')}
+.social {background-image: url('images/social.png')}
+.confroom {background-image: url('images/confroom.png')}
+.techstatus {background-image: url('images/techstatus.png')}
+.shortcuts {background-image: url('images/shortcuts.png')}
+.play {background-image: url('images/play.png')}
+
+h2 {
+  font-family: "din-web-reg", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: #000;
+  font-size: 1.75em;
+  font-weight: 600;
+  padding: 0 0 0.2em;
+  line-height: 1.2em;
+}
+
+p {
+  font-size: 1.25em;
+  line-height: 1.4em;
+}
+
+.outro {
+  font-size: 2em;
+  text-align: center;
+  color: #000;
+  margin: 2em 0;
+}
+
+/* technical notes */
+
+.technotes_wrapper {
+  background: #efefef;
+}
+
+.technotes {
+  width: 600px;
+  margin: 5em auto 1em;
+  padding: 4em 2em;
+  color: #999;
+  font-size: 10px;
+}
+
+.technotes h2 {
+  color: #999;
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.technotes a {
+  color: #999;
+  text-decoration: none;
+  border-bottom: 1px dotted #999;
+}
+
+.technotes a:hover {
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+}
+
+.technotes p {
+  line-height: 1.4em;
+  margin-bottom: 1em;
+}
+

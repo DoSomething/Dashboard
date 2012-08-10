@@ -1,0 +1,421 @@
+/* reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del,
+dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub,
+sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 14px;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+
+:focus {outline: 0;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+table {border-collapse: separate; border-spacing: 0;}
+caption, th, td {text-align: left; font-weight: normal;}
+blockquote:before, blockquote:after,q:before, q:after {content: "";}
+blockquote, q {quotes: "" "";}
+
+/* basics */
+
+body {
+  background: #13458d;
+  color: #fff;
+  padding: 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+p {
+  margin-bottom: 0.5em;
+  line-height: 1.3em;
+}
+
+a {
+  color: #00B7FF;
+}
+
+ul {
+  padding-left: 32px;
+  line-height: 2em;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
+/* general elements */
+
+h1 {
+  font-family: "din-web-reg";
+  font-size: 2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 0.5em;
+  margin-bottom: 0.2em;
+  padding-top: 0.2em;
+}
+
+h1 strong {
+  font-size: 1em;
+  color: #ffd200;
+  font-weight: 600;
+}
+
+.widget {
+  position: relative;
+  background: #fff;
+  color: #333;
+  margin: 10px 10px 30px;
+  padding: 30px 10px 10px;
+}
+
+.twocol {
+  width: 46%;
+  float: left;
+}
+
+/** section headings */
+h4 {
+  font-family: "din-web-reg", Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 1.5em;
+  background: #1b1b1b;
+  color: #fff;
+  margin-top: 1em;
+  padding: 0.2em 10px 0;
+  display: inline-block;
+  position: absolute;
+  top: -35px;
+  left: -10px;
+}
+
+h4 span {
+  display: block;
+  background: url('images/tilted-edge.png') no-repeat top right;
+  position: absolute;
+  bottom: -12px;
+  right: 0;
+  height: 12px;
+  width: 100%;
+}
+
+.container {
+  padding-top: 1em;
+}
+
+
+#title {
+  text-align: center;
+  margin: 24px 0 48px;
+}
+
+#home_shortcut {
+  position: fixed;
+  z-index: 1;
+  top: 12px;
+  left: 12px;
+  width: 32px;
+  height: 32px;
+  background: url('/images/snapback.png') no-repeat center center;
+  opacity: 0.2;
+}
+
+#home_shortcut:hover {
+  opacity: 1.0;
+}
+
+#home_shortcut span {
+  display: none;
+}
+
+/* now playing */
+
+#now_playing {
+  height: 225px;
+}
+
+#album_art {
+  float: left;
+  margin: 10px;
+  -moz-box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+.album_meta {
+  float: left;
+  margin: 16px 10px 10px;
+  padding-left: 0;
+  font-size: 1.5em;
+}
+
+#song {
+  font-size: 1.5em;
+  margin: 0.5em 0 0;
+  width: 710px;
+  overflow: hidden;
+}
+
+#song span {
+  display: block;
+  width: 1200px;
+}
+
+.album_meta li {
+  font-size: 1em;
+  line-height: 1.75em;
+  margin-bottom: 0;
+}
+
+.album_meta span {
+  font-size: 1em;
+}
+
+.track_progress {
+  display: block;
+  width: 710px;
+  height: 8px;
+  background: #ddd;
+  margin-bottom: 7px !important;
+  overflow: hidden;
+}
+
+#track_percent_complete {
+  width: 0%;
+  height: 8px;
+  background: #333;
+}
+
+#song {
+  font-weight: bold;
+}
+
+.rdio_control {
+  padding: 10px;
+  margin-top: 5px;
+}
+
+#ui_queuesong {
+  position: relative;
+  clear: both;
+}
+
+#ui_queuesong .search {
+  font-size: 1.2em;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid #ccc;
+  width: 385px;
+  background: transparent url('images/icons/search_inactive.png') no-repeat 6px 50%;
+}
+
+#ui_queuesong .searching {
+  color: #666;
+  font-style: italic;
+}
+
+#queue_searchresults {
+  padding-top: 15px;
+}
+
+#queue_searchresults li {
+  list-style-type: none;
+  line-height: 2em;
+}
+
+#queue_searchresults div {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#queue_searchresults a {
+  text-decoration: none;
+  color: #333;
+}
+
+#queue_searchresults div:hover {
+  background-color: #eee;
+}
+
+.poweredby {
+  font-size: 0.8em;
+  color: #aaa;
+  text-align: right;
+  margin: 10px 5px 0;
+}
+
+.song {
+  height: 50px;
+  clear: both;
+}
+
+.song.loadedin {
+  -webkit-animation-duration: 3s;
+  -webkit-animation-name: highlightAJAX;
+}
+
+.song.searchresult {
+  cursor: pointer;
+}
+
+@-webkit-keyframes highlightAJAX {
+  from {
+    background: #fffde8;
+  }
+  
+  to {
+    background: #ffffff;
+  }
+}
+
+.song img {
+  float: left;
+  margin: 8px 10px;
+  -moz-box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+.song_meta {
+  padding-top: 17px;
+  overflow: hidden;
+}
+
+.song_meta span {
+  display: block;
+  width: 1000px;
+}
+
+#empty_queue {
+  color: #aaa;
+  text-align: center;
+}
+
+#empty_queue h5 {
+  font-size: 1.5em;
+  margin: 1em;
+}
+
+#empty_queue p {
+  margin: 2em;
+}
+
+a.play_action {
+  font-weight: bold;
+  padding: 5px 5px 5px 30px;
+  margin-right: 10px;
+  background: no-repeat 5px 50%;
+  color: #000;
+  opacity: 0.5;
+  
+  text-decoration: none;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#do_listen {
+  background-image: url('images/icons/broadcast.png');
+}
+
+#do_skipsong {
+  background-image: url('images/icons/skip.png');
+}
+
+a.play_action:hover {
+  background-color: #eee;
+  text-decoration: underline;
+  opacity: 1;
+}
+
+a#do_skipsong:active {
+  background-color: #ddd;
+  opacity: 1;
+}
+
+a#do_skipsong.active {
+  background-image: url('images/icons/voted.png');
+  opacity: 1;
+}
+
+a#do_skipsong.active:hover {
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a#do_skipsong.active:active {
+  background-color: transparent;
+}
+
+#skipvotes {
+  font-style: normal;
+  color: #666;
+  padding-left: 5px;
+}
+
+/* listen info page */
+
+#listen_widget {
+  width: 500px;
+  padding: 1em 0 0;
+  margin: 0 auto;
+}
+
+#listen_widget h1 {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+#listen_widget p {
+  font-size: 16px;
+  text-align: center;
+}
+
+#listen_widget small {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+.listen_howto {
+  text-align: right;
+  height: 241px;
+}
+
+
+/* extras */
+
+#footer {
+  clear:both;
+}
+
+#error {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 2em;
+  line-height: 20em;
+  background: rgba(0, 0, 0, 0.85);
+  text-align: center;
+  color: #fff;
+}
+
