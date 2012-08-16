@@ -19,6 +19,8 @@ Usage
 3. Start Nicecast and hit "Start Broadcast" to begin streaming audio.
 4. That's it! You can restart Dashboard by running `forever restartall`, or stop it using `forever stopall`. Log messages are placed in the home directory.
 
+The current Redmine sprint can be updated by visiting the [issues page](http://tech.dosomething.org/issues) and setting a filter for "Target Version" to the current sprint. Hit "Apply" and look for the `fixed_version_id` part of the URL on the result page. This should be an integer (for example, Sprint 5 was `fixed_version_id=16`). Put that integer in the appropriate field in `config.js`.
+
 Settings
 ========
 Settings are stored in `widgets/config.js` on the server (not included in the repo). You can make your own version for local testing by filling in the missing parts of `widgets/config_sample.js` with your own API keys. Don't use the versions we use in production or we'll hit rate limits very quickly! Check the [Services README](https://github.com/DoSomething/Dashboard/blob/master/README_SERVICES.md) for details.
