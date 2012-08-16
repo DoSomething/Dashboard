@@ -43,6 +43,17 @@ socket.on('darksky_forecast', function(data) {
     }
 });
 
+function setClearSkyImage() {
+    today = new Date();         // initialize to current date
+    var h = today.getHours();
+    
+    if(h < 5 || h > 20) {
+        setNightSkyImage();
+    } else {
+        $("#weather").addClass("clear");
+    }
+}
+
 
 /** Determines the proper night sky image for a clear night. */
 function setNightSkyImage() {
