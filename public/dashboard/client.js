@@ -31,7 +31,7 @@ socket.on('darksky_forecast', function(data) {
         $("#weather").removeClass();
         
         switch(data.condition) {
-            case "clear": setNightSkyImage(); break;
+            case "clear": setClearSkyImage(); break;
             case "rain": $("#weather").addClass("rain"); break;
             case "sleet": $("#weather").addClass("sleet"); break;
             case "snow": $("#weather").addClass("snow"); break;
