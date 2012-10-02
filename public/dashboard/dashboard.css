@@ -266,7 +266,7 @@ h4 span {
 }
 
 .twitter_msg {
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 .twitter_message {
@@ -494,7 +494,7 @@ li.closed_tickets { background: url('images/icons/closed_tickets.png') no-repeat
   margin-right: 10px;
   background: no-repeat 5px 50%;
   color: #000;
-  
+
   text-decoration: none;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -554,7 +554,7 @@ li.closed_tickets { background: url('images/icons/closed_tickets.png') no-repeat
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px;
-  
+
   background-image: url('images/icons/broadcast.png');
   background-position: 8px 50%;
   background-size: 16px 16px;

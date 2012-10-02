@@ -57,10 +57,10 @@ function get_darksky_forecast(callback, error) {
     if(callback) {
       res.on('data', function(d) {
         latestForecast = JSON.parse(d);
-        
+
         if(latestForecast != undefined && latestForecast.hourSummary != undefined) {
           var hourSum = latestForecast.hourSummary;
-          
+
           console.log("Forecast text length: " + hourSum.length);
           if(hourSum.length >= 30) {
             forecast_summary = latestForecast.briefHourSummary;
@@ -68,22 +68,22 @@ function get_darksky_forecast(callback, error) {
           } else {
             forecast_summary = latestForecast.hourSummary;
           }
-          
+
           console.dir(latestForecast.hourPrecipitation[0]);
-          
+
           if(latestForecast.hourPrecipitation[0] != undefined) {
             var now_unix_time = Math.round((new Date()).getTime() / 1000);
             var condition_time = latestForecast.hourPrecipitation[0].time;
-            
+
             if(condition_time <= now_unix_time) {
               // this forecast is already happening, so it's current
-              
+
               current_condition = latestForecast.hourPrecipitation[0].type;
             } else {
               current_condition = "clear";
             }
           }
-          
+
           if(forecast_summary == "clear") {
             current_condition = "clear";
           }
@@ -91,9 +91,9 @@ function get_darksky_forecast(callback, error) {
         } else {
           current_condition = "unknown";
         }
-        
-        
-        
+
+
+
         callback(d);
       });
     }

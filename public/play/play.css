@@ -279,7 +279,7 @@ h4 span {
   from {
     background: #fffde8;
   }
-  
+
   to {
     background: #ffffff;
   }
@@ -324,7 +324,7 @@ a.play_action {
   background: no-repeat 5px 50%;
   color: #000;
   opacity: 0.5;
-  
+
   text-decoration: none;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;

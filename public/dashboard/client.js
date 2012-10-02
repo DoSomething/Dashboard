@@ -2,7 +2,7 @@ var socket = io.connect();
 
 /* ------------- Connection Events ------------- */
 socket.on('disconnect', function() {
-   console.log("disconnected"); 
+   console.log("disconnected");
 });
 
 socket.on('reconnecting', function(reconnectionDelay,reconnectionAttempts) {
@@ -18,18 +18,18 @@ socket.on('reconnect', function() {
 /* ------------- Dark Sky ------------- */
 socket.on('darksky_forecast', function(data) {
     console.log("Given condition: " + data.condition);
-    
+
     if(data.condition == "unknown") {
         // ...
-        
+
         $("#weather").removeClass();
         $("#weather").addClass("unknown");
-        
+
         $("#weather").text("Weather Unavailable");
     } else {
         $("#weather").html(data.temperature + "&deg;F, " + data.forecast);
         $("#weather").removeClass();
-        
+
         switch(data.condition) {
             case "clear": setClearSkyImage(); break;
             case "rain": $("#weather").addClass("rain"); break;
@@ -46,7 +46,7 @@ socket.on('darksky_forecast', function(data) {
 function setClearSkyImage() {
     today = new Date();         // initialize to current date
     var h = today.getHours();
-    
+
     if(h < 5 || h > 20) {
         setNightSkyImage();
     } else {
@@ -58,7 +58,7 @@ function setClearSkyImage() {
 /** Determines the proper night sky image for a clear night. */
 function setNightSkyImage() {
     // Code to calculate moon phase is courtesy of: http://biology.clc.uc.edu/steincarter/moon/moon%20code.htm
-    
+
     today = new Date();         // initialize to current date
     hh = today.getHours();          // goes from 0 to 23
     var ampm = "am"
@@ -71,21 +71,21 @@ function setNightSkyImage() {
     var dow = today.getDay();
     MonNames = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
     var ThisMonth = MonNames[mm];
-    
+
     // var yy = today.getYear();
     // browser Y2K bug fix -- convert from msec to years because getYear() doesn't work right
         var millisec = today.getTime();            // this gives msecs
         var yy = ((((millisec / 1000) / 3600) / 24) / 365.25);
         yy = Math.floor(yy);
         yy +=1970;
-    
+
     var txtDate = "" + ((dd < 10) ? "0" : "") + dd;   // add 0 if less than 10 so displays right
     txtDate += "&nbsp;" + ThisMonth;
     txtDate += "&nbsp;" + yy;
     var mn = today.getMinutes();        // goes from 0 to 59
     var txtTime = "" + ((NoLoops < 10) ? "0" : "") + NoLoops;
     txtTime += ((mn<10) ? ":0" : ":") + mn;
-    
+
     // here's where the calculations from the book start
     var moondate = today;
     tzone = moondate.getTimezoneOffset() / 60               // in min so convert to hours
@@ -137,7 +137,7 @@ function setNightSkyImage() {
     var D67 = lpp - lamda;                                  //no 67-2
     Ff = .5 * (1 - Math.cos(D67 * 3.141592654 / 180));      //no 67-3
     Xx = (Math.sin(D67 * 3.141592654 / 180));
-    
+
     // figure out what phase the moon is in and what icon to use to go with it
     if(Ff < .02) {
             // new moon
@@ -150,11 +150,11 @@ function setNightSkyImage() {
     if((Ff > .45) && (Ff < .55) && (Xx < 0)) {
             // last (third) quarter
             $("#weather").addClass("moon_gibbous");
-    }                
+    }
     if(Ff > .98) {
             // full moon
             $("#weather").addClass("moon_full");
-    }                                                                             
+    }
     if((Ff > .02) && (Ff < .45) && (Xx > 0)) {
             // waxing
             $("#weather").addClass("moon_crescent");
@@ -177,16 +177,16 @@ function setNightSkyImage() {
 numTweets = 0;
 socket.on('twitter_stream', function(data) {
     $(".ticker_tape").prepend('<span class="tweet"><a class="twitter_name" href="' + 'http://www.twitter.com/' + data.screen_name + '" title="' + data.name + '">' + '<div class="twitter_avatar"><img src="' + data.avatar + '" width="24px" height="24px" /></div>' + data.screen_name + '</a> <a class="twitter_msg" href="' + 'http://www.twitter.com/' + data.screen_name + '/status/' + data.id + '"><span class="twitter_message">' + data.text + '</span></span></a>');
-    
+
     var tweet_width = $(".tweet:first").width() + 18;
     $(".ticker_tape").css('right', -1 * tweet_width);
-    
+
     $(".ticker_tape").animate({
         right: 0
     }, 2000)
-    
+
     numTweets++;
-    
+
     if(numTweets > 10) {
         $(".tweet:last").remove();
     }
@@ -206,10 +206,10 @@ $(document).ready(function() {
             case 5: today = "Friday"; break;
             case 6: today = "Saturday"; break;
         }
-        
+
         var day = date.getDate();
         var year = date.getFullYear();
-        
+
         switch(date.getMonth()) {
             case 0: month = "January"; break;
             case 1: month = "February"; break;
@@ -224,9 +224,9 @@ $(document).ready(function() {
             case 10: month = "November"; break;
             case 11: month = "December"; break;
         }
-        
+
         var hours = date.getHours();
-        
+
         if((hours <= 6) || (hours >= 20)) {
             $("body").addClass("night");
             $("#welcome_message").html("<strong>Go to sleep!</strong> " + month + " " + day + " " + year);
@@ -234,26 +234,26 @@ $(document).ready(function() {
             $("body").removeClass("night");
             $("#welcome_message").html("<strong>Happy " + today + "!</strong> " + month + " " + day + " " + year);
         }
-        
+
         nextHour = getTimeAtNextHour();
         timeUntilNextHour = nextHour - new Date();
-        
+
         setTimeout(setWelcome, timeUntilNextHour);
     }
-    
+
     setWelcome();
-    
+
     // make whole container clickable for meeting rooms
     $(".confroom").click(function() {
         window.location=$(this).find("a").attr("href");
         return false;
     });
-    
+
     $(".phonebooth").click(function() {
         window.location=$(this).find("a").attr("href");
         return false;
     });
-    
+
 });
 
 /* ------------- Now Playing ------------- */
@@ -263,7 +263,7 @@ var voted = false;
 
 $("#rdio_widget").click(function(e) {
     e.preventDefault();
-    
+
     window.location.pathname = "/play"
 })
 
@@ -275,7 +275,7 @@ socket.on('now_playing', function(data) {
     song_duration = data.duration;
     start_time = data.startTime;
     voted = false;
-    
+
     if(localStorage.getItem("voted") == start_time) {
         $("#do_skipsong").addClass("active");
         $("#do_skipsong").text("Voted");
@@ -283,14 +283,14 @@ socket.on('now_playing', function(data) {
     } else {
         localStorage.setItem("voted", "");
     }
-    
+
     setTrackProgress();
 });
 
 function setTrackProgress() {
     var time_difference = (Date.now() - start_time) / 1000;
     var percentage = (time_difference / song_duration) * 100;
-    
+
     $("#track_percent_complete").width(percentage + "%");
 }
 
@@ -302,7 +302,7 @@ socket.on('full_queue', function(data) {
     } else {
         $("#queue_contents").html('<div class="queuedsong"><img class="queuedsong" width="35" height="35" src="images/shuffle.png" /><p class="queuedsong_meta">(nothing queued, playing on shuffle)</p></div>');
     }
-    
+
 });
 
 /* ------------- Facebook Graph / Twitter follower count ------------- */
@@ -331,19 +331,19 @@ socket.on('code_push', function(data) {
 socket.on('redmine', function(data) {
     var open = data.open_issues;
     var closed = data.closed_issues;
-    
+
     if(open == 1) {
         open_str = open + " open ticket";
     } else {
         open_str = open + " open tickets";
     }
-    
+
     if(closed == 1) {
         closed_str = closed + " ticket";
     } else {
         closed_str = closed + " tickets";
     }
-    
+
     $("#open_tickets").text(open_str);
     $("#closed_tickets").text(closed_str);
 });
@@ -363,16 +363,16 @@ socket.on('calendar', function(data) {
 function setMeetingRoomStatus(id, json) {
     id.removeClass("free");
     id.removeClass("inuse");
-    
+
     id.addClass(json.status);
-    
+
     var niceStatus, niceTime;
     if(json.status == "free") {
         niceStatus = "free";
     } else {
         niceStatus = "in-use";
     }
-    
+
     if(json.until == "tomorrow") {
         niceTime = "tomorrow";
     } else {
@@ -380,22 +380,22 @@ function setMeetingRoomStatus(id, json) {
         var hour = d.getHours();
         var minute = d.getMinutes();
         var ampm = "AM";
-        
+
         if(hour > 12) {
             hour = hour - 12;
             ampm = "PM";
         } else if(hour == 12) {
             ampm = "PM";
         }
-        
+
         if(minute < 10) {
             minute = "0" + minute;
         }
-        
+
         niceTime = hour + ":" + minute + " " + ampm;
-        
+
     }
-    
+
     id.find("em").text(niceStatus + " until " + niceTime);
 }
 
@@ -415,25 +415,25 @@ function animateNumber(name, display, target, label, progressbar, max) {
     } else {
         counter = target - Math.min(Math.floor(target * 0.1), 400);
     }
-    
+
     if(target - counter < 15) {
         interval = 50;
     } else {
         interval = 5;
     }
-    
+
     var countAnimation = setInterval(function() {
         display.html(delimitNumbers(counter) + label);
-        
+
         if(progressbar) {
             progressbar.css("width", ((counter/max) * 100) + "%");
         }
-        
+
         if(counter >= target) {
             clearInterval(countAnimation);
             localStorage.setItem(name, counter)
         }
-        
+
         if(counter < target) {
             counter++;
         } else {
@@ -461,4 +461,3 @@ function getTimeAtNextHour() {
 $.fn.changeTimeago = function(isotime) {
     return $(this).attr("title",isotime).data("timeago",null).timeago();
 }
-        

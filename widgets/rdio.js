@@ -2,7 +2,7 @@ var      config = require('../config.js').rdio;
 
 var applescript = require("applescript"),
            Rdio = require("rdio-node").Rdio;
-           
+
 var r = new Rdio({
   consumerKey: config.CONSUMER_KEY,
   consumerSecret: config.CONSUMER_SECRET
@@ -77,13 +77,13 @@ function playTrack(track) {
     album = track.album;
     albumart = track.albumart;
     duration = track.duration;
-    
+
     runApplescript('tell application "Rdio" to play source "' + track.id + '"');
     startTime = Date.now();
     skipVotes = 3;
-    
+
     track_progress_timer = setTimeout(playNext, duration * 1000);
-    
+
     broadcast();
   } else {
     playNext()
@@ -100,7 +100,7 @@ function send(socket) {
     'startTime': startTime,
     'artwork': albumart
   });
-  
+
   socket.emit('full_queue', queued_tracks);
   socket.emit('skip_votes', skipVotes);
 }
@@ -121,9 +121,9 @@ function broadcast() {
       'startTime': startTime,
       'artwork': albumart
     });
-    
+
     io.sockets.emit('full_queue', queued_tracks);
-    
+
     io.sockets.emit('skip_votes', skipVotes);
   }
 }
@@ -169,7 +169,7 @@ function addToQueue(id, callback) {
         io.sockets.emit('queue_addition', d);
       }
     }
-    
+
     if(callback != undefined) {
       callback();
     }
@@ -224,13 +224,13 @@ function getTrackInfoFromID(id, callback) {
 function getTrackInfoFromUrl(track_url, callback) {
   r.makeRequest('getObjectFromUrl', {url: track_url}, function() {
     console.dir(arguments['1'].result);
-    
+
     song = arguments['1'].result.name;
     artist = arguments['1'].result.artist;
     album = arguments['1'].result.album;
     duration = arguments['1'].result.duration;
     albumart = arguments['1'].result.icon;
-    
+
     callback();
   });
 }

@@ -5,9 +5,9 @@
     <title>Dashboard</title>
     <link href="http://c308566.r66.cf1.rackcdn.com/din.css" rel="stylesheet" type="text/css" />
     <link href="dashboard.css" rel="stylesheet" type="text/css" />
-    
+
     <link href="/webfonts/ss-social.css" rel="stylesheet" type="text/css" />
-    
+
     <script src="/javascripts/jquery-1.7.2.min.js"></script>
     <script src="/javascripts/jquery.timeago.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -27,43 +27,43 @@
                 <a href="http://www.google.com/calendar/embed?src=dosomething.org_2d3538363933353536323630%40resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>Fortress of Solitude</strong></a>
                 <em>free until 0:00pm</em>
             </div>
-            
+
             <div class="confroom" id="conf_themyscira">
                 <p><img src="images/croom_themyscira.png" /></p>
                 <a href="http://www.google.com/calendar/embed?src=dosomething.org_2d38363637313938363230%40resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>Themyscira</strong></a>
                 <em>free until 0:00pm</em>
             </div>
-            
+
             <div class="confroom" id="conf_xaviers">
                 <p><img src="images/croom_xaviers.png" /></p>
                 <a href="http://www.google.com/calendar/embed?src=dosomething.org_3732343239383232313533%40resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>Xavier's School</strong></a>
                 <em>free until tomorrow</em>
             </div>
-            
+
             <div class="confroom" id="conf_ingram">
                 <p><img src="images/croom_ingram.png" /></p>
                 <a href="https://www.google.com/calendar/embed?src=dosomething.org_2d33333338323238343834@resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>20 Ingram St.</strong></a>
                 <em>in-use until 0:00pm</em>
             </div>
-            
+
             <div class="confroom" id="conf_batcave">
                 <p><img src="images/croom_batcave.png" /></p>
                 <a href="http://www.google.com/calendar/embed?src=dosomething.org_39363139303231372d3138%40resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>The Batcave</strong></a>
                 <em>free until 0:00pm</em>
             </div>
-            
+
             <div class="phonebooth" id="conf_phone1">
                 <a href="https://www.google.com/calendar/embed?src=dosomething.org_32343432363339332d3434@resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>Phone Booth #1</strong></a>
                 <em>free until 0:00pm</em>
             </div>
-            
+
             <div class="phonebooth" id="conf_phone2">
                 <a href="https://www.google.com/calendar/embed?src=dosomething.org_32353033383832362d3834@resource.calendar.google.com&ctz=America/New_York&mode=week"><strong>Phone Booth #2</strong></a>
                 <em>free until 0:00pm</em>
             </div>
-            
+
         </div>
-        
+
         <div class="twocol widget">
             <h4>Tech Status<span></span></h4>
             <ul class="techstatus">
@@ -73,39 +73,39 @@
                 <li class="closed_tickets"><span id="closed_tickets">&hellip; tickets</span> closed so far this sprint.</li>
             </ul>
         </div>
-        
+
         <div class="twocol widget" id="rdio_widget">
             <h4>Now Playing<span></span></h4>
             <div class="nowplaying_clicker">
                 <img id="album_art" src="images/placeholder.png" />
-                
+
                 <ul class="album_meta">
                     <li class="track_progress"><div id="track_percent_complete"></div></li>
                     <li id="song">&hellip;</li>
                     <li><span id="album">&hellip;</span></li>
                     <li><span id="artist">&hellip;</span></li>
                 </ul>
-                
+
                 <h5>Coming up next:</h5>
                 <div id="queue_contents">
                 </div>
             </div>
         </div>
-        
+
         <div id="footer">
             &nbsp;
         </div>
-        
+
         <div id="ticker">
             <div class="ticker_tape">
             </div>
         </div>
     </div>
-    
+
     <span id="error" style="display: none;"></span>
     <a id="home_shortcut" href="/"><span>/do</span></a>
-    
+
     <script type="text/javascript" src="client.js"></script>
-    
+
 </body>
 </html>

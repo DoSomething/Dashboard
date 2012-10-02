@@ -10,7 +10,7 @@ setInterval(refresh, 30*1000);
 
 /** Sends to a single client, given their socket object. */
 function send(socket) {
-  socket.emit('redmine', { 
+  socket.emit('redmine', {
     "open_issues": open_issues,
     "closed_issues": closed_issues
   });
@@ -24,7 +24,7 @@ function attachIO(_io) {
 /** Broadcasts to all clients. Socket.IO object must have been previously attached. */
 function broadcast() {
   if(io) {
-    io.sockets.emit('redmine', { 
+    io.sockets.emit('redmine', {
       "open_issues": open_issues,
       "closed_issues": closed_issues
     });
@@ -48,7 +48,7 @@ function refresh() {
 /** Refreshes the count of issues that are open in this sprint. */
 function refresh_open_issues() {
   var buffer = "";
-  
+
   var auth = 'Basic ' + new Buffer(config.API_KEY + ':').toString('base64');
   var options = {
     host: 'tech.dosomething.org',
@@ -59,31 +59,31 @@ function refresh_open_issues() {
       'Authorization': auth
     }
   };
-  
+
   var req = http.request(options, function(res, err) {
     res.on('data', function(chunk) {
       buffer += chunk;
     });
-    
+
     res.on('end', function() {
         data = JSON.parse(buffer);
         open_issues = data.total_count;
     });
   });
-  
+
   req.on('error', function(e) {
    console.log("Error making request to Redmine API: " + e);
   });
-  
+
   req.end();
 }
 
 /** Refreshes the count of issues that were closed this week. */
 function refresh_closed_issues() {
 
-  
+
   var buffer = "";
-  
+
   var auth = 'Basic ' + new Buffer(config.API_KEY + ':').toString('base64');
   var options = {
     host: 'tech.dosomething.org',
@@ -94,21 +94,21 @@ function refresh_closed_issues() {
       'Authorization': auth
     }
   };
-  
+
   var req = http.request(options, function(res, err) {
     res.on('data', function(chunk) {
       buffer += chunk;
     });
-    
+
     res.on('end', function() {
         data = JSON.parse(buffer);
         closed_issues = data.total_count;
     });
   });
-  
+
   req.on('error', function(e) {
    console.log("Error making request to Redmine API: " + e);
   });
-  
+
   req.end();
 }

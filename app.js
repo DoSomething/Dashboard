@@ -1,5 +1,5 @@
 /* ------------- Dependencies ------------- */
- 
+
 var express = require('express'),
      routes = require('./routes'),
        http = require('http'),
@@ -79,7 +79,7 @@ io.set('authorization', function(data, accept) {
     data.cookie = cookie.parse(data.headers.cookie);
     data.sessionID = data.cookie['express.sid'];
     data.sessionStore = sessionStore;
-    
+
     // get the session data from the session store
     sessionStore.get(data.sessionID, function(err, session) {
       if(err || !session) {
@@ -93,7 +93,7 @@ io.set('authorization', function(data, accept) {
   } else {
     return accept('No cookie transmitted.', false);
   }
-  
+
   accept(null, true);
 });
 
@@ -117,11 +117,11 @@ io.on('connection', function(socket) {
   calendar.send(socket);
   redmine.send(socket);
   members.send(socket);
-  
+
   numConnections++;
   console.log("\n ** A socket has connected! (" + numConnections + " users connected.)");
   console.log(" ** Socket: " + socket.handshake.sessionID + " \n");
-  
+
   socket.on('disconnect', function() {
     numConnections--;
     console.log("\n ** A socket has disconnected! " + numConnections + " users connected.\n");
@@ -140,13 +140,13 @@ app.get('/techwiki', function(req, res) {
 
 app.get('/play/listen.m3u', function(req, res) {
   var file = __dirname + '/public/download/listen.m3u';
-  
+
   var filename = path.basename(file);
   var mimetype = mime.lookup(file);
-  
+
   res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
   res.setHeader('Content-Type', mimetype);
-  
+
   var filestream = fs.createReadStream(file);
   filestream.on('data', function(chunk) {
     res.write(chunk);
@@ -184,14 +184,14 @@ app.get('/api/play/search', function(req, res) {
       rdio.search(req.param('s', null), function(data) {
         res.json(data);
       });
-      
-      
+
+
     } else {
       res.writeHead(500, {'Content-Type': 'text/plain'});
       res.end("Internal Error - Rdio not initialized.");
     }
-    
-    
+
+
   });
 });
 
@@ -202,39 +202,39 @@ app.post('/api/play/skip', function(req, res) {
     // clear the skip limit table if this is a new song
     if(songID != rdio.getSongID()) {
       songID = rdio.getSongID();
-      
+
       skip_limit_table = {};
       console.log("Cleared skip limit table after new song!");
     }
-    
+
     console.dir(skip_limit_table);
     // check if IP is in table, if so refuse request
     if(skip_limit_table[req.ip] == "voted") {
       console.log("Found IP in skip limit table, refusing request!");
-      
+
       res.writeHead(403, {'Content-Type': 'text/plain'});
       res.end("FORBIDDEN");
     } else {
       if(rdio) {
         rdio.skip();
       }
-      
+
       skip_limit_table[req.ip] = "voted";
       console.log("Added an IP to refuse future skip requests to!")
       console.dir(skip_limit_table);
-      
+
       res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end("OK");
     }
-    
-    
+
+
   });
 });
 
 /** [POST] Accepts a secret key to indicate that code has been pushed. */
 ext_app.post('/api/codepush', function(req, res) {
   var key = req.param('key', null);
-  
+
   console.log("Received key is: " + key);
   if(key == '9ea0e06f22661970ce1b12661970ce1b1b1fa1d2e6f1') {
     // since this is internal only, i think this is a reasonable safeguard

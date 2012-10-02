@@ -27,7 +27,7 @@ setInterval(update_likes_count, 60 * 1000);
 /** Attach Socket.IO object for broadcasts. Everything else will automagically start! */
 function attachIO(_io) {
   io = _io;
-  
+
   update_followers_count();
 }
 
@@ -36,7 +36,7 @@ function send(socket) {
   for(t = recent_tweets.length - 1; t >= 0; t--) {
     socket.emit('twitter_stream', recent_tweets[t]);
   }
-  
+
   socket.emit('followers_count', followers_count);
   socket.emit('likes_count', likes_count);
 }
@@ -51,7 +51,7 @@ exports.send = send;
 var twitter_stream = twitter.stream('statuses/filter', { track: '@dosomething' });
 twitter_stream.on('tweet', function(tweet) {
   console.dir(tweet);
-  
+
   // save latest 3 tweets in an array
   var t = {
     'text': tweet.text,
@@ -60,13 +60,13 @@ twitter_stream.on('tweet', function(tweet) {
     'avatar': tweet.user.profile_image_url,
     'id': tweet.id_str // ?
   }
-  
+
   recent_tweets.push(t);
 
   if(recent_tweets.length > 3) {
     recent_tweets.pop();
   }
-  
+
   if(io) {
     io.sockets.emit('twitter_stream', t);
   }
@@ -81,7 +81,7 @@ function update_followers_count() {
       console.log("WARNING: Couldn't read follower count from Twitter API. Received:");
       console.dir(data);
     }
-    
+
     if(io) {
       io.sockets.emit('followers_count', followers_count);
     }
@@ -90,33 +90,33 @@ function update_followers_count() {
 
 function update_likes_count() {
   var buffer = "";
-  
+
   var options = {
     host: 'graph.facebook.com',
     port: 80,
     path: '/dosomething',
     method: 'GET'
   };
-  
+
   var req = http.request(options, function(res, err) {
     res.on('data', function(chunk) {
       buffer += chunk;
     });
-    
+
     res.on('end', function() {
         data = JSON.parse(buffer);
         likes_count = data.likes;
-        
+
         if(io) {
           io.sockets.emit('likes_count', likes_count);
         }
     });
   });
-  
+
   req.on('error', function(e) {
    console.error("Error making request to Facebook Graph API: " + e);
   });
-  
+
   req.end();
 }
 

@@ -12,7 +12,7 @@ config.weather = {};
 
   See the documentation in README_SERVICES.md for details on how to set this up.
   When you have filled in all the appropriate information, save this file as 'config.js'
-  
+
 **/
 
 config.calendar.DEVICE_CODE = ''

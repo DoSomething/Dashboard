@@ -25,10 +25,10 @@ setInterval(refresh, 10*1000);
 
 /** Sends to a single client, given their socket object. */
 function send(socket) {
-  socket.emit('recent_commits', { 
+  socket.emit('recent_commits', {
     "waiting_commits": waitingCommits
   });
-  
+
   socket.emit('code_push', lastPush_str);
 }
 
@@ -40,10 +40,10 @@ function attachIO(_io) {
 /** Broadcasts to all clients. Socket.IO object must have been previously attached. */
 function broadcast() {
   if(io) {
-    io.sockets.emit('recent_commits', { 
+    io.sockets.emit('recent_commits', {
       "waiting_commits": waitingCommits
     });
-    
+
     io.sockets.emit('code_push', lastPush_str);
   } else {
     console.error("Error: Need to attach io object before Github can broadcast.");
@@ -53,15 +53,15 @@ function broadcast() {
 /** Updates the time of last code push. */
 function codepush() {
   var now = new Date();
-  
+
   lastPush = now;
   lastPush_str = now.toISOString();
-  
+
   var stream = fs.createWriteStream(__dirname + "/data/codepush.txt");
   stream.once('open', function(fd) {
     stream.write(lastPush_str);
   });
-  
+
   broadcast();
 }
 
@@ -77,12 +77,12 @@ exports.codepush = codepush;
 function refresh() {
   // commits = [];
   waitingCommits = 0;
-  
+
   github.authenticate({
     type: "oauth",
     token: config.TOKEN
   });
-  
+
   github.repos.getCommits({
     user: config.USER,
     repo: config.REPO
@@ -95,7 +95,7 @@ function refresh() {
           }
         }
     }
-    
+
     broadcast();
   });
 }
