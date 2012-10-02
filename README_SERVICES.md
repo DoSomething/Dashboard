@@ -24,10 +24,6 @@ Github
 ------
 Once again, here's the quick version. More details can be found on the [Github OAuth Docs](http://developer.github.com/v3/oauth/). I don't remember exactly how I went about this (since it doesn't go through the normal OAuth flow)... so when someone figures it out, why not update this README as your first commit? :)
 
-Rdio
-----
-You can get your own Rdio API key from [developer.rdio.com](http://developer.rdio.com). It doesn't need any special permissions - all data is fetched from public sources.
-
 Twitter
 -------
 You can get your own Twitter API key at [dev.twitter.com/apps](https://dev.twitter.com/apps). It doesn't need any special permissions - all data is fetched from the public timeline. Don't worry about the callback URL, since we don't authenticate individual users using the app.

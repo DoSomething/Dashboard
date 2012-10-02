@@ -253,56 +253,6 @@ $(document).ready(function() {
         window.location=$(this).find("a").attr("href");
         return false;
     });
-
-});
-
-/* ------------- Now Playing ------------- */
-var start_time;
-var song_duration = 0;
-var voted = false;
-
-$("#rdio_widget").click(function(e) {
-    e.preventDefault();
-
-    window.location.pathname = "/play"
-})
-
-socket.on('now_playing', function(data) {
-    $("#song").text(data.song);
-    $("#artist").text(data.artist);
-    $("#album").text(data.album);
-    $("#album_art").attr('src', data.artwork);
-    song_duration = data.duration;
-    start_time = data.startTime;
-    voted = false;
-
-    if(localStorage.getItem("voted") == start_time) {
-        $("#do_skipsong").addClass("active");
-        $("#do_skipsong").text("Voted");
-        voted = true;
-    } else {
-        localStorage.setItem("voted", "");
-    }
-
-    setTrackProgress();
-});
-
-function setTrackProgress() {
-    var time_difference = (Date.now() - start_time) / 1000;
-    var percentage = (time_difference / song_duration) * 100;
-
-    $("#track_percent_complete").width(percentage + "%");
-}
-
-setInterval(setTrackProgress, 1000);
-
-socket.on('full_queue', function(data) {
-    if(data[0] != undefined) {
-        $("#queue_contents").html('<div class="queuedsong"><img class="queuedsong" width="35" height="35" src="' + data[0].albumart+ '" /><p class="queuedsong_meta"><strong>' + data[0].song + '</strong> by ' + data[0].artist + '</p></div>');
-    } else {
-        $("#queue_contents").html('<div class="queuedsong"><img class="queuedsong" width="35" height="35" src="images/shuffle.png" /><p class="queuedsong_meta">(nothing queued, playing on shuffle)</p></div>');
-    }
-
 });
 
 /* ------------- Facebook Graph / Twitter follower count ------------- */

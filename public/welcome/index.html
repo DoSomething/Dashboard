@@ -47,11 +47,6 @@
                 <p>It can be a pain to remember the URLs to all the different services we use. <strong>Dashboard acts as your digital chauffeur by giving you easy shortcuts.</strong> Visit <span class="url">do/</span> in your browser for a list of services, or just add a keyword to the URL to jump directly to the associated service (for example, <span class="url">do/bugs</span>.)</p>
             </div>
 
-            <div class="feature play">
-                <h2>And finally, let's do something fun&hellip;</h2>
-                <p><strong>Introducing DS Play, the office DJ.</strong> We listen to music all the time in the office, but it can be a hassle to do so together. Now everyone can share their favorite songs and tune in live to what the rest of the office is listening to.</p>
-            </div>
-
             <p class="outro">Check it out at <a href="/dashboard">do/dashboard</a>!</p>
 
             <div class="technotes_wrapper">
@@ -63,7 +58,6 @@
                 <p>Weather is provided by the (magical) <a href="https://developer.darkskyapp.com/">Dark Sky API</a>, which gives short-term forecasts with precise details for precipitation over the next hour.</p>
                 <p>Conference room availability is provided by the <a href="https://developers.google.com/google-apps/calendar/">Google Calendar v3 API</a>. Free/busy information is parsed server-side to find any contiguous events before sending data off to clients.</p>
                 <p>Commit status is provided by the <a href="http://developer.github.com/v3/">Github API</a>. Code deploys are tracked by pinging the Dashboard server with a POST request when Chris's deploy script is run. Sprint status is obtained using the <a href="#">Redmine REST API</a>.</p>
-                <p>Inspired by <a href="http://www.github.com/play/play">Github Play</a>, DS Play is  a custom-built playlist manager and API written in NodeJS, which handles queueing songs & communicating with a desktop Rdio client via <a href="https://developer.apple.com/library/mac/#documentation/AppleScript/Conceptual/AppleScriptX/AppleScriptX.html">AppleScript</a>. The audio from the desktop Rdio client is streamed across the office using <a href="http://rogueamoeba.com/nicecast/">Nicecast</a>. Because all interaction with the DS Play server occur through a standard REST API, clients could be built for other platforms and devices in the future with minimal changes to the server. The code for DS Play will be open-sourced on Github so that other companies can use and improve it.</p>
                 <p>The Twitter ticker is powered by the <a href="https://dev.twitter.com/docs/streaming-apis">Twitter Streaming API</a>, with a filter set to subscribe to @dosomething mentions. This allows Dashboard to receive instant updates without the overhead of constantly querying yet another REST API.</p>
                 <p>Social icons are from the wonderful <a href="http://symbolset.com/">Symbolset</a> by Oak Studios. Superhero icons used for the conference rooms are from their respective source material. Most other icons were created specifically for Dashboard, and will be released as part of a larger set sometime in the future.</p>
             </div>
