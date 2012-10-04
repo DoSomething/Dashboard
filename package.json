@@ -1,14 +1,16 @@
 {
-  "name": "application-name",
+  "name": "DosomethingDesktop",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.0.0beta4",
-    "jade": "*",
-    "request": "2.11.*",
-    "github": "0.1.6"
+    "express": "3.0.0rc5",
+    "jade": ">=0.26.3",
+    "request": ">=2.11.0",
+    "github": "0.1.6",
+    "socket.io": ">=0.9.6",
+    "twit": ">=0.1.7"
   }
 }
