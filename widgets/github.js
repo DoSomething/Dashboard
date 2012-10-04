@@ -6,7 +6,7 @@ var githubapi = require("github"),
 var github = new githubapi({
   version: "3.0.0"
 });
-
+var io;
 var commits = [];
 var waitingCommits = 0;
 
@@ -45,8 +45,6 @@ function broadcast() {
     });
 
     io.sockets.emit('code_push', lastPush_str);
-  } else {
-    console.error("Error: Need to attach io object before Github can broadcast.");
   }
 }
 
@@ -87,6 +85,9 @@ function refresh() {
     user: config.USER,
     repo: config.REPO
   }, function(err, res) {
+    if (err) {
+      console.log("github - error fetching", err);
+    }
     for(var n in res) {
         if(res[n].commit && res[n].commit.message != "Merge branch 'master' of github.com:" + config.USER + "/" + config.REPO) {
           var commitDate = new Date(Date.parse(res[n].commit.committer.date));

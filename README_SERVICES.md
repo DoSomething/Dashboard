@@ -22,7 +22,32 @@ curl -d "client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}&code={USER_CODE}&gr
 
 Github
 ------
-Once again, here's the quick version. More details can be found on the [Github OAuth Docs](http://developer.github.com/v3/oauth/). I don't remember exactly how I went about this (since it doesn't go through the normal OAuth flow)... so when someone figures it out, why not update this README as your first commit? :)
+Here's the quick version.
+
+    var GitHubApi = require("github");
+    var github = new GitHubApi({
+        version: "3.0.0"
+    });
+    github.authenticate({
+      type: "basic",
+      username: 'YOUR USERNAME',
+      password: 'YOUR PASSWORD'
+    });
+    github.oauth.createAuthorization(
+      { scopes:['repo'],
+        note:'DoSomething Dashboard'
+      }
+    , function(e,d) {
+        console.log("error: " + e, "token: " + d.token);
+      }
+    );
+
+If it's successful you'll see something like:
+
+    error: null token: 49ed7dbc40c3171d024fd32582bd3ead273eee52
+
+And you can use that token.
+
 
 Twitter
 -------

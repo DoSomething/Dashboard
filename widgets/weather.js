@@ -1,9 +1,12 @@
-var config = require('../config.js').weather;
-var https = require('https');
+var config = require('../config.js').weather
+  , request = require('request')
+  ;
 
-var latestForecast;
-var forecast_summary = "";
-var current_condition = "";
+var io
+  , latestForecast
+  , forecast_summary = ""
+  , current_condition = ""
+  ;
 
 /* Set broadcast interval. */
 setInterval(broadcast, 60 * 1000);
@@ -45,69 +48,44 @@ exports.broadcast = broadcast;
 /* ------------- Private Methods ------------- */
 
 /** Fetches updated microforecast information from Dark Sky API. */
-function get_darksky_forecast(callback, error) {
-  var options = {
-    host: 'api.darkskyapp.com',
-    port: 443,
-    path: '/v1/forecast/' + config.API_KEY + '/' + config.LATITUDE + ',' + config.LONGITUDE,
-    method: 'GET'
-  };
+function get_darksky_forecast(callback) {
+  callback = callback || function(err) {};
 
-  var req = https.request(options, function(res, err) {
-    if(callback) {
-      res.on('data', function(d) {
-        latestForecast = JSON.parse(d);
+  request(
+    { uri: 'https://api.darkskyapp.com/v1/forecast/' + config.API_KEY + '/' + config.LATITUDE + ',' + config.LONGITUDE
+    , method: 'GET'
+    }
+  , function (err, response, body) {
+      latestForecast = JSON.parse(body);
 
-        if(latestForecast != undefined && latestForecast.hourSummary != undefined) {
-          var hourSum = latestForecast.hourSummary;
-
-          console.log("Forecast text length: " + hourSum.length);
-          if(hourSum.length >= 30) {
-            forecast_summary = latestForecast.briefHourSummary;
-            console.log("Shortened weather -- " + latestForecast.hourSummary + " --> " + latestForecast.briefHourSummary);
-          } else {
-            forecast_summary = latestForecast.hourSummary;
-          }
-
-          console.dir(latestForecast.hourPrecipitation[0]);
-
-          if(latestForecast.hourPrecipitation[0] != undefined) {
-            var now_unix_time = Math.round((new Date()).getTime() / 1000);
-            var condition_time = latestForecast.hourPrecipitation[0].time;
-
-            if(condition_time <= now_unix_time) {
-              // this forecast is already happening, so it's current
-
-              current_condition = latestForecast.hourPrecipitation[0].type;
-            } else {
-              current_condition = "clear";
-            }
-          }
-
-          if(forecast_summary == "clear") {
-            current_condition = "clear";
-          }
-
-        } else {
-          current_condition = "unknown";
+      if (latestForecast != undefined && latestForecast.hourSummary != undefined) {
+        forecast_summary = latestForecast.hourSummary;
+        if (forecast_summary.length >= 30) {
+          forecast_summary = latestForecast.briefHourSummary;
         }
 
+        if (latestForecast.hourPrecipitation[0] != undefined) {
+          var now_unix_time = Math.round((new Date()).getTime() / 1000);
+          var condition_time = latestForecast.hourPrecipitation[0].time;
 
+          if(condition_time <= now_unix_time) {
+            // this forecast is already happening, so it's current
+            current_condition = latestForecast.hourPrecipitation[0].type;
+          } else {
+            current_condition = "clear";
+          }
+        }
 
-        callback(d);
-      });
+        if (forecast_summary == "clear") {
+          current_condition = "clear";
+        }
+        console.log("weather: forecast - " + forecast_summary);
+      } else {
+        current_condition = "unknown";
+        console.log("weather: fetch failed");
+      }
+
+      callback();
     }
-
-    req.on('error', function(e) {
-      // error(e);
-      console.error("Error making request to Dark Sky API.");
-    });
-  });
-
-  req.end();
-}
-
-/** Fetches updated current conditions information from the National Weather Service API.  */
-function get_nws_conditions(callback, error) {
-  // w1.weather.gov/xml/current_obs/KNYC.xml
+  );
 }
