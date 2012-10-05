@@ -9,12 +9,16 @@ var express = require('express'),
        path = require('path'),
        mime = require('mime');
 
-var weather = require('./widgets/weather.js'),
-     github = require('./widgets/github.js'),
-     social = require('./widgets/social.js'),
-   calendar = require('./widgets/calendar.js'),
-    redmine = require('./widgets/redmine.js'),
-    members = require('./widgets/members.js');
+var widgets = [
+    require('./widgets/weather.js')
+  , require('./widgets/github.js')
+  , require('./widgets/social.js')
+  , require('./widgets/calendar.js')
+  , require('./widgets/redmine.js')
+  , require('./widgets/members.js')
+  ];
+// Keep track of what we sent out last so we can send it to new connections.
+var lastUpdates = {};
 
 /* ------------- Setup ------------- */
 
@@ -72,6 +76,7 @@ ext_server.listen(ext_app.get('port'), function(){
 });
 
 var Session = require('connect').middleware.session.Session;
+io.set('log level', 2);
 io.set('authorization', function(data, accept) {
   // check if there's a cookie header
   if(data.headers.cookie) {
@@ -97,21 +102,34 @@ io.set('authorization', function(data, accept) {
 });
 
 // attach Socket.io to widgets
-weather.attachIO(io);
-github.attachIO(io);
-social.attachIO(io);
-calendar.attachIO(io);
-redmine.attachIO(io);
-members.attachIO(io);
+var handleUpdate = function(err, response) {
+  if (err) {
+    console.log("failed update...", err, response);
+    return;
+  }
+  Object.keys(response).forEach(function(name) {
+    io.sockets.emit(name, response[name]);
+
+    // Keep track of what we've sent out.
+    lastUpdates[name] = response[name];
+  });
+}
 
 // on new connections
 io.on('connection', function(socket) {
-  weather.send(socket);
-  github.send(socket);
-  social.send(socket);
-  calendar.send(socket);
-  redmine.send(socket);
-  members.send(socket);
+  var keys = Object.keys(lastUpdates);
+  if (keys.length > 0) {
+console.log("last updates", lastUpdates);
+    // Send a copy of all the old data.
+    keys.forEach(function(name) {
+      socket.emit(name, lastUpdates[name]);
+    });
+  }
+  else {
+    widgets.forEach(function(source) {
+      source.update(handleUpdate);
+    });
+  }
 
   numConnections++;
   console.log("\n ** A socket has connected! (" + numConnections + " users connected.)");

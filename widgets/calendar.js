@@ -1,7 +1,6 @@
 var config = require('../config.js').calendar;
-var  https = require('https');
+var request = require('request');
 
-var io;
 var freebusy; // cached free busy information
 
 var cals = {
@@ -15,29 +14,12 @@ var cals = {
 };
 
 /* Set refresh interval. */
-refreshCalendars();
-setInterval(refreshCalendars, 30 * 1000);
+// refreshCalendars();
+// setInterval(refreshCalendars, 30 * 1000);
 
-function attachIO(_io) {
-  io = _io;
+exports.update = function(callback) {
+  refreshCalendars(callback);
 }
-
-function broadcast() {
-  if(io) {
-    io.sockets.emit('calendar', freebusy);
-  } else {
-    console.error("Error: Need to attach io object before Calendar can broadcast.");
-  }
-}
-
-function send(socket) {
-  socket.emit('calendar', freebusy);
-}
-
-exports.send = send;
-exports.attachIO = attachIO;
-exports.broadcast = broadcast;
-
 
 /* ------------- Private Methods ------------- */
 
@@ -46,68 +28,38 @@ var access_token = "";
 function refreshToken(callback) {
   var previous_token = access_token;
 
-  var post_data = JSON.stringify({
-    'client_id': config.CLIENT_ID,
-    'client_secret': config.CLIENT_SECRET,
-    'refresh_token': config.REFRESH_TOKEN,
-    'grant_type': 'refresh_token'
-  });
-
-  var options = {
-    host: 'accounts.google.com',
-    port: 443,
-    path: '/o/oauth2/token',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': post_data.length,
-      'Authorization': 'Bearer ' + access_token
+  request(
+    { uri: 'https://accounts.google.com/o/oauth2/token'
+    , method: 'POST'
+    , headers: { 'Authorization': 'Bearer ' + access_token }
+    , form:
+      { 'client_id': config.CLIENT_ID
+      , 'client_secret': config.CLIENT_SECRET
+      , 'refresh_token': config.REFRESH_TOKEN
+      , 'grant_type': 'refresh_token'
+      }
     }
-  }
+  , function (err, response, body) {
+      if (err) return callback(err);
 
-  var req = https.request(options, function(res) {
-    res.setEncoding('utf8');
-
-    res.on('data', function(data) {
-      data = JSON.parse(data);
-      if(data.access_token != undefined) {
-        // console.log("****** NEW ACCESS TOKEN ****** ");
-        // console.log(data.access_token);
-        // console.log("****************************** ");
+      data = JSON.parse(body);
+      if (data.access_token != undefined) {
         access_token = data.access_token;
 
-        if(previous_token != access_token) {
-          callback();
-        } else {
-          console.error("ERROR: Could not refresh access token.");
+        if (previous_token != access_token) {
+          console.log("calendar - got a new token");
+          callback(err, access_token);
         }
       }
-    });
-  });
-
-  req.write(post_data);
-  req.end();
+    }
+  );
 }
 
 /** Refresh free/busy information from the Google Calendar API. */
-function refreshCalendars() {
+function refreshCalendars(callback) {
   var date = new Date();
   var now = date.toISOString();
   var endOfDay = now.substr(0, 11) + "23:59:59" + now.substr(19);
-
-  console.log("Fetching free/busy information from " + now + " to " + endOfDay + ".");
-
-  // HTTP request options
-  var options = {
-    host: 'www.googleapis.com',
-    port: 443,
-    path: '/calendar/v3/freeBusy/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + access_token
-    }
-  }
 
   // construct POST data
   var post_data = {
@@ -119,35 +71,41 @@ function refreshCalendars() {
     post_data.items.push({id: cals[name]});
   });
 
-  var req = https.request(options, function(res) {
-    var buffer = "", data;
-    res.setEncoding('utf8');
+  console.log("calendar - fetching between " + now + " and " + endOfDay);
 
-    res.on('data', function(chunk) {
-      buffer += chunk;
-    });
-
-    res.on('end', function() {
-      data = JSON.parse(buffer); // parse into valid JSON
-
-      if(data.calendars != undefined) {
-        // we got good data, yay!
-        freebusy = {};
-        Object.keys(cals).forEach(function(name) {
-          var id = cals[name];
-          freebusy[name] = parseFreeBusy(data.calendars[id].busy);
-        });
-        broadcast();
-      } else {
-        refreshToken(function() {
-          refreshCalendars();
-        });
+  request(
+    { uri: 'https://www.googleapis.com/calendar/v3/freeBusy/'
+    , method: 'POST'
+    , headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + access_token
       }
-    });
-  });
+    , body: JSON.stringify(post_data)
+    }
+  , function (err, response, body) {
+      // check for a failed token
+      if (response.statusCode == 401) {
+        console.log("calendar - auth failed fetching a new token");
+        refreshToken(function(err) {
+          if (err) return callback(err);
 
-  req.write(JSON.stringify(post_data));
-  req.end();
+          refreshCalendars(callback);
+        });
+        return;
+      }
+      // catch other errors.
+      else if (err) return callback(err);
+
+      data = JSON.parse(body);
+
+      freebusy = {};
+      Object.keys(cals).forEach(function(name) {
+        var id = cals[name];
+        freebusy[name] = parseFreeBusy(data.calendars[id].busy);
+      });
+      callback(null, {'calendar': freebusy});
+    }
+  );
 }
 
 // ------- results -------
@@ -161,7 +119,7 @@ function refreshCalendars() {
 //   'until': 'tomorrow'
 // }
 function parseFreeBusy(freebusyArray) {
-  if(freebusyArray.length === 0) {
+  if (freebusyArray.length === 0) {
     // no events for the rest of the day
     return {
       'status': 'free',

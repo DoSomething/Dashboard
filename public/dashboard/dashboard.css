@@ -136,7 +136,7 @@ h1#weather.alert { background: url('images/weather/alert.png') no-repeat left ce
 
 h1#users {
   margin-top: -0.2em;
-  font-size: 115px;
+  font-size: 100px;
   margin-bottom: 0;
   text-align: center;
 }

@@ -1,114 +1,43 @@
 var config = require('../config.js').redmine;
 
-var   http = require('http');
-
-var io, open_issues = 0, closed_issues = 0;
+var request = require('request')
+  ,   async = require('async')
 
 /* Set refresh interval. */
-refresh();
-setInterval(refresh, 30*1000);
+// refresh();
+// setInterval(refresh, 30*1000);
 
-/** Sends to a single client, given their socket object. */
-function send(socket) {
-  socket.emit('redmine', {
-    "open_issues": open_issues,
-    "closed_issues": closed_issues
-  });
+exports.update = function(callback) {
+  async.parallel(
+    {  open_issues: function(cb) { refresh_issues('o', cb); }
+    ,  closed_issues: function(cb) { refresh_issues('c', cb); }
+    }
+  , function(err, results) {
+      console.log("redmine - open:", results.open_issues, " closed:", results.closed_issues)
+      callback(null, {redmine: results});
+    }
+  );
 }
-
-/** Attach Socket.IO object for broadcasts. */
-function attachIO(_io) {
-  io = _io;
-}
-
-/** Broadcasts to all clients. Socket.IO object must have been previously attached. */
-function broadcast() {
-  if(io) {
-    io.sockets.emit('redmine', {
-      "open_issues": open_issues,
-      "closed_issues": closed_issues
-    });
-  } else {
-    console.log("Error: Need to attach io object before Github can broadcast.");
-  }
-}
-
-exports.send = send;
-exports.attachIO = attachIO;
-exports.broadcast = broadcast;
 
 /* ------------- Private Methods ------------- */
 
-function refresh() {
-  refresh_open_issues();
-  refresh_closed_issues();
-  broadcast();
-}
-
-/** Refreshes the count of issues that are open in this sprint. */
-function refresh_open_issues() {
-  var buffer = "";
-
-  var auth = 'Basic ' + new Buffer(config.API_KEY + ':').toString('base64');
-  var options = {
-    host: 'tech.dosomething.org',
-    port: 80,
-    path: '/issues.json?status_id=o&fixed_version_id=' + config.CURRENT_SPRINT_ID,
-    method: 'GET',
-    headers: {
-      'Authorization': auth
+/** Refreshes the count of issues with a status are open in this sprint. */
+function refresh_issues(status, callback) {
+  request(
+    { uri: 'http://tech.dosomething.org/issues.json?status_id=' + status + '&fixed_version_id=' + config.CURRENT_SPRINT_ID
+    , method: 'GET'
+    , headers:
+      {
+        'Authorization': 'Basic ' + new Buffer(config.API_KEY + ':').toString('base64')
+      }
     }
-  };
-
-  var req = http.request(options, function(res, err) {
-    res.on('data', function(chunk) {
-      buffer += chunk;
-    });
-
-    res.on('end', function() {
-        data = JSON.parse(buffer);
-        open_issues = data.total_count;
-    });
-  });
-
-  req.on('error', function(e) {
-   console.log("Error making request to Redmine API: " + e);
-  });
-
-  req.end();
-}
-
-/** Refreshes the count of issues that were closed this week. */
-function refresh_closed_issues() {
-
-
-  var buffer = "";
-
-  var auth = 'Basic ' + new Buffer(config.API_KEY + ':').toString('base64');
-  var options = {
-    host: 'tech.dosomething.org',
-    port: 80,
-    path: '/issues.json?status_id=c&fixed_version_id=' + config.CURRENT_SPRINT_ID,
-    method: 'GET',
-    headers: {
-      'Authorization': auth
+  , function (err, response, body) {
+      if (err) {
+        console.log("readmine - fetch open failed");
+        return callback(err);
+      }
+      data = JSON.parse(body);
+      callback(null, data.total_count);
     }
-  };
-
-  var req = http.request(options, function(res, err) {
-    res.on('data', function(chunk) {
-      buffer += chunk;
-    });
-
-    res.on('end', function() {
-        data = JSON.parse(buffer);
-        closed_issues = data.total_count;
-    });
-  });
-
-  req.on('error', function(e) {
-   console.log("Error making request to Redmine API: " + e);
-  });
-
-  req.end();
+  );
 }

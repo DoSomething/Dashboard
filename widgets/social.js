@@ -1,8 +1,7 @@
 var config = require('../config.js').social;
 
-var   twit = require("twit"),
-      http = require("http"),
-     https = require("https");
+var    twit = require("twit"),
+    request = require("request");
 
 var io;
 
@@ -18,32 +17,16 @@ var followers_count = 0;
 var likes_count = 0;
 
 /* Set refresh intervals. */
-update_followers_count();
-setInterval(update_followers_count, 120 * 1000);
+// update_followers_count();
+// setInterval(update_followers_count, 120 * 1000);
 
-update_likes_count();
-setInterval(update_likes_count, 60 * 1000);
+// update_likes_count();
+// setInterval(update_likes_count, 60 * 1000);
 
-/** Attach Socket.IO object for broadcasts. Everything else will automagically start! */
-function attachIO(_io) {
-  io = _io;
-
-  update_followers_count();
+exports.update = function(callback) {
+  update_followers_count(callback);
+  update_likes_count(callback);
 }
-
-/** Used to send cached data to clients on a new connection (so they don't have to wait for next broadcast). */
-function send(socket) {
-  for(t = recent_tweets.length - 1; t >= 0; t--) {
-    socket.emit('twitter_stream', recent_tweets[t]);
-  }
-
-  socket.emit('followers_count', followers_count);
-  socket.emit('likes_count', likes_count);
-}
-
-exports.attachIO = attachIO;
-exports.send = send;
-
 
 /* ------------- Private Methods ------------- */
 
@@ -73,50 +56,29 @@ twitter_stream.on('tweet', function(tweet) {
 });
 
 
-function update_followers_count() {
+function update_followers_count(callback) {
   twitter.get("users/show", { screen_name: 'dosomething' }, function(err, data) {
-    if(data && data.followers_count) {
-      followers_count = data.followers_count;
-    } else {
-      console.log("WARNING: Couldn't read follower count from Twitter API. Received:");
-      console.dir(data);
-    }
+    if (err) return callback(err);
 
-    if(io) {
-      io.sockets.emit('followers_count', followers_count);
+    if (data && data.followers_count) {
+      callback(null, {'followers_count': data.followers_count});
+    } else {
+      callback("WARNING: Couldn't read follower count from Twitter API. Received:", data);
     }
   });
 }
 
-function update_likes_count() {
-  var buffer = "";
+function update_likes_count(callback) {
+  request(
+    { uri: 'http://graph.facebook.com/dosomething'
+    , method: 'GET'
+    }
+  , function (err, response, body) {
+      if (err) return callback(err);
 
-  var options = {
-    host: 'graph.facebook.com',
-    port: 80,
-    path: '/dosomething',
-    method: 'GET'
-  };
-
-  var req = http.request(options, function(res, err) {
-    res.on('data', function(chunk) {
-      buffer += chunk;
-    });
-
-    res.on('end', function() {
-        data = JSON.parse(buffer);
-        likes_count = data.likes;
-
-        if(io) {
-          io.sockets.emit('likes_count', likes_count);
-        }
-    });
-  });
-
-  req.on('error', function(e) {
-   console.error("Error making request to Facebook Graph API: " + e);
-  });
-
-  req.end();
+      data = JSON.parse(body);
+      callback(null, {'likes_count': data.likes});
+    }
+  );
 }
 

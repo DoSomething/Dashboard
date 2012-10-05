@@ -6,7 +6,6 @@ var githubapi = require("github"),
 var github = new githubapi({
   version: "3.0.0"
 });
-var io;
 var commits = [];
 var waitingCommits = 0;
 
@@ -20,33 +19,10 @@ fs.readFile(__dirname + "/data/codepush.txt", function (err, data) {
   lastPush_str = lastPush.toISOString();
 });
 
+
 /* Set refresh interval. */
-setInterval(refresh, 10*1000);
+// setInterval(refresh, 10*1000);
 
-/** Sends to a single client, given their socket object. */
-function send(socket) {
-  socket.emit('recent_commits', {
-    "waiting_commits": waitingCommits
-  });
-
-  socket.emit('code_push', lastPush_str);
-}
-
-/** Attach Socket.IO object for broadcasts. */
-function attachIO(_io) {
-  io = _io;
-}
-
-/** Broadcasts to all clients. Socket.IO object must have been previously attached. */
-function broadcast() {
-  if(io) {
-    io.sockets.emit('recent_commits', {
-      "waiting_commits": waitingCommits
-    });
-
-    io.sockets.emit('code_push', lastPush_str);
-  }
-}
 
 /** Updates the time of last code push. */
 function codepush() {
@@ -63,16 +39,15 @@ function codepush() {
   broadcast();
 }
 
-exports.send = send;
-exports.attachIO = attachIO;
-exports.broadcast = broadcast;
+// exports.codepush = codepush;
 
-exports.codepush = codepush;
-
+exports.update = function(callback) {
+  refresh(callback);
+}
 
 /* ------------- Private Methods ------------- */
 
-function refresh() {
+function refresh(callback) {
   // commits = [];
   waitingCommits = 0;
 
@@ -87,16 +62,20 @@ function refresh() {
   }, function(err, res) {
     if (err) {
       console.log("github - error fetching", err);
+      return callback(err);
     }
-    for(var n in res) {
-        if(res[n].commit && res[n].commit.message != "Merge branch 'master' of github.com:" + config.USER + "/" + config.REPO) {
-          var commitDate = new Date(Date.parse(res[n].commit.committer.date));
-          if(commitDate > lastPush) {
-            waitingCommits++;
-          }
+    for (var n in res) {
+      if (res[n].commit && res[n].commit.message != "Merge branch 'master' of github.com:" + config.USER + "/" + config.REPO) {
+        var commitDate = new Date(Date.parse(res[n].commit.committer.date));
+        if (commitDate > lastPush) {
+          waitingCommits++;
         }
+      }
     }
 
-    broadcast();
+    callback(null, {
+      'waiting_commits': waitingCommits
+    , 'code_push': lastPush_str
+    });
   });
 }
