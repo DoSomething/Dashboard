@@ -6,12 +6,20 @@
     "start": "node app"
   },
   "dependencies": {
+    "connect": ">=2.5.0",
     "express": "3.0.0rc5",
+    "mime": ">=1.2.7",
+    "cookie": ">=0.0.4",
     "jade": ">=0.26.3",
     "request": ">=2.11.0",
-    "github": "0.1.6",
     "socket.io": ">=0.9.6",
+    "oauth": ">=0.9.8",
+    "async": ">=0.1.22",
+    "feedparser": ">=0.9.12",
+    "jsdom": ">=0.2.15",
+    "redis": ">=0.7.2",
+    "github": "0.1.6",
     "twit": ">=0.1.7",
-    "async": "*"
+    "mailchimp": ">=0.9.1"
   }
 }
