@@ -9,14 +9,6 @@ var express = require('express'),
        path = require('path'),
        mime = require('mime');
 
-var widgets = [
-    require('./widgets/weather.js')
-  , require('./widgets/github.js')
-  , require('./widgets/social.js')
-  , require('./widgets/calendar.js')
-  , require('./widgets/redmine.js')
-  , require('./widgets/members.js')
-  ];
 // Keep track of what we sent out last so we can send it to new connections.
 var lastUpdates = {};
 
@@ -62,17 +54,12 @@ ext_app.configure(function(){
 
 // start up server and initialize things
 var server = http.createServer(app);
-var ext_server = http.createServer(ext_app);
 var io = require('socket.io').listen(server);
 
 var numConnections = 0;
 
 server.listen(app.get('port'), function(){
-  console.log("Internal (main) server listening on port " + app.get('port'));
-});
-
-ext_server.listen(ext_app.get('port'), function(){
-  console.log("External (limited API) server listening on port " + ext_app.get('port'));
+  console.log("app - server listening on port " + app.get('port'));
 });
 
 var Session = require('connect').middleware.session.Session;
@@ -101,44 +88,59 @@ io.set('authorization', function(data, accept) {
   accept(null, true);
 });
 
-// attach Socket.io to widgets
-var handleUpdate = function(err, response) {
-  if (err) {
-    console.log("failed update...", err, response);
-    return;
-  }
-  Object.keys(response).forEach(function(name) {
-    io.sockets.emit(name, response[name]);
-
-    // Keep track of what we've sent out.
-    lastUpdates[name] = response[name];
-  });
-}
-
 // on new connections
 io.on('connection', function(socket) {
   var keys = Object.keys(lastUpdates);
   if (keys.length > 0) {
-console.log("last updates", lastUpdates);
     // Send a copy of all the old data.
     keys.forEach(function(name) {
       socket.emit(name, lastUpdates[name]);
     });
   }
-  else {
-    widgets.forEach(function(source) {
-      source.update(handleUpdate);
-    });
-  }
 
   numConnections++;
-  console.log("\n ** A socket has connected! (" + numConnections + " users connected.)");
-  console.log(" ** Socket: " + socket.handshake.sessionID + " \n");
+  console.log("app - A socket has connected! " + numConnections + " users connected.");
 
   socket.on('disconnect', function() {
     numConnections--;
-    console.log("\n ** A socket has disconnected! " + numConnections + " users connected.\n");
+    console.log("app - A socket has disconnected! " + numConnections + " users connected.");
   })
+});
+
+var widgets = [
+    'weather'
+  , 'github'
+  , 'twitter'
+  , 'facebook'
+  , 'calendar'
+  , 'redmine'
+  , 'members'
+  ];
+widgets.forEach(function (widgetName) {
+  var widget = require('./widgets/' + widgetName);
+  widget.name = widgetName;
+
+  // Handled updates and schedule the widget's next update.
+  widget.update(function handler(err, response) {
+    // Schedule the next update. It might be nice to back off if there was a
+    // error.
+    setTimeout(function() { widget.update(handler) }, widget.updateInterval || 60 * 1000);
+
+    if (err) {
+      console.log(widget.name, "- update failed", err, response);
+      return;
+    }
+    Object.keys(response).forEach(function(name) {
+      // Keep track of what we've sent out.
+      lastUpdates[name] = response[name];
+      io.sockets.emit(name, response[name]);
+    });
+  });
+
+  // If it streams updates give it a copy of the io.
+  if (widget.stream) {
+    widget.stream(io);
+  }
 });
 
 /* ------------- Redirects ------------- */
@@ -149,30 +151,5 @@ app.get('/bugs', function(req, res) {
 
 app.get('/techwiki', function(req, res) {
   res.redirect("http://www.dosomething.org/tech");
-});
-
-
-/* ------------- API ------------- */
-
-var last_push;
-
-/** [POST] Accepts a secret key to indicate that code has been pushed. */
-ext_app.post('/api/codepush', function(req, res) {
-  var key = req.param('key', null);
-
-  console.log("Received key is: " + key);
-  if(key == '9ea0e06f22661970ce1b12661970ce1b1b1fa1d2e6f1') {
-    // since this is internal only, i think this is a reasonable safeguard
-    console.log("[POST] Received indication that code has been pushed. Updating timestamp!")
-    github.codepush();
-
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end("OK");
-  } else {
-    console.log("[POST] Ack! received a code push notification with an invalid key. Ignoring.")
-
-    res.writeHead(403, {'Content-Type': 'text/plain'});
-    res.end("INVALID KEY");
-  }
 });
 

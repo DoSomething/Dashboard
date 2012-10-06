@@ -3,10 +3,7 @@ var config = require('../config.js').redmine;
 var request = require('request')
   ,   async = require('async')
 
-/* Set refresh interval. */
-// refresh();
-// setInterval(refresh, 30*1000);
-
+exports.updateInterval = 5 * 60 * 1000; // 1 minute
 exports.update = function(callback) {
   async.parallel(
     {  open_issues: function(cb) { refresh_issues('o', cb); }

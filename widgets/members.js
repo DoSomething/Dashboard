@@ -1,17 +1,12 @@
 var         config = require('../config.js').members;
 
-var        request = require('request'),
-             jsdom = require('jsdom'),
-      MailChimpAPI = require('mailchimp').MailChimpAPI;
+var async = require('async')
+  , request = require('request')
+  , jsdom = require('jsdom')
+  , MailChimpAPI = require('mailchimp').MailChimpAPI
+  ;
 
-var total_member_count = 0;
-var mobilecommons_count = 0;
-var mailchimp_count = 0;
-
-/* Set refresh interval. */
-// refresh();
-// setInterval(refresh, 10 * 60 * 1000); // 10 minutes
-
+exports.updateInterval = 10 * 60 * 1000; // 10 minutes
 exports.update = function(callback) {
   refresh(callback);
 }
@@ -19,19 +14,18 @@ exports.update = function(callback) {
 /* ------------- Private Methods ------------- */
 
 function refresh(callback) {
-  refreshMobileCommons(function(err, mobilecommons_count) {
-    refreshMailchimp(function(err, mailchimp_count) {
-      total_member_count = Math.floor(mobilecommons_count * .75) + mailchimp_count + 120000;
-
+  async.parallel(
+    {  mobilecommons: refreshMobileCommons
+    ,  mailchimp: refreshMailchimp
+    }
+  , function(err, results) {
+      var total_member_count = Math.floor(results.mobilecommons * .75) + results.mailchimp + 120000;
       callback(null, {'members': total_member_count});
-    });
-  });
+    }
+  );
 }
 
 /** Gets an estimate of the number of MobileCommons users, accurate within 5. */
-
-
-
 function refreshMobileCommons(callback) {
   request(
     { uri: 'https://secure.mcommons.com/dashboard'
@@ -44,13 +38,18 @@ function refreshMobileCommons(callback) {
       }
     }
   , function (err, response, body) {
+      if (err) return callback(err);
+
       jsdom.env(body, [
       'http://code.jquery.com/jquery-1.5.min.js'
-      ], function(errors, window) {
-        var raw_count = window.$(".subscribers-a p span").text();
-        mobilecommons_count = parseInt(raw_count.replace(/,/g, ''));
-        console.log("members - mobilecommons: " + mobilecommons_count);
+      ], function(err, window) {
+        if (err) return callback(err);
 
+        var raw_count = window.$(".subscribers-a p span").text();
+        var mobilecommons_count = parseInt(raw_count.replace(/,/g, ''));
+        console.log("members - mobilecommons: " + mobilecommons_count);
+        // Release the memory.
+        window.close();
         callback(null, mobilecommons_count);
       });
     }
@@ -62,13 +61,14 @@ function refreshMailchimp(callback) {
   try {
     var api = new MailChimpAPI(config.MAILCHIMP_API_KEY, {version: '1.3', secure: false});
   } catch(error) {
-    console.log(error.message);
+    return callback(error);
   }
 
   api.listGrowthHistory({id: "f2fab1dfd4"}, function(error, data) {
-    var latest = data[data.length - 1];
+    if (error) return callback(error);
 
-    mailchimp_count = parseInt(latest.existing) + parseInt(latest.imports) + parseInt(latest.optins);
+    var latest = data[data.length - 1];
+    var mailchimp_count = parseInt(latest.existing) + parseInt(latest.imports) + parseInt(latest.optins);
     console.log("members - mailchimp: " + mailchimp_count);
 
     callback(null, mailchimp_count);

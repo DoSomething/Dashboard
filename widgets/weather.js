@@ -2,11 +2,7 @@ var config = require('../config.js').weather
   , request = require('request')
   ;
 
-var io;
-
-/* Set broadcast interval. */
-// setInterval(broadcast, 60 * 1000);
-
+exports.updateInterval = 60 * 1000; // 1 minute
 exports.update = function(callback) {
   get_darksky_forecast(callback);
 }
@@ -20,10 +16,7 @@ function get_darksky_forecast(callback) {
     , method: 'GET'
     }
   , function (err, response, body) {
-      if (err) {
-        console.log("weather - fetch failed");
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       var latestForecast = JSON.parse(body)
         , forecast_summary = ""
@@ -31,7 +24,6 @@ function get_darksky_forecast(callback) {
         ;
 
       if (latestForecast == undefined || latestForecast.hourSummary == undefined) {
-        console.log("weather - fetch failed");
         return callback("couldn't parse weather data");
       }
 
@@ -58,11 +50,10 @@ function get_darksky_forecast(callback) {
 
       console.log("weather -", latestForecast.currentTemp, current_condition, ':', forecast_summary);
 
-      callback(null, {'darksky_forecast':
-        {
-          temperature: latestForecast.currentTemp,
-          forecast: forecast_summary,
-          condition: current_condition
+      callback(null, { 'darksky_forecast':
+        { temperature: latestForecast.currentTemp
+        , forecast: forecast_summary
+        , condition: current_condition
         }
       });
     }

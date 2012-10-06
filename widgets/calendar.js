@@ -1,8 +1,6 @@
 var config = require('../config.js').calendar;
 var request = require('request');
 
-var freebusy; // cached free busy information
-
 var cals = {
   'fortress': 'dosomething.org_2d3538363933353536323630@resource.calendar.google.com',
   'themyscira': 'dosomething.org_2d38363637313938363230@resource.calendar.google.com',
@@ -13,10 +11,7 @@ var cals = {
   'phone2': 'dosomething.org_32353033383832362d3834@resource.calendar.google.com',
 };
 
-/* Set refresh interval. */
-// refreshCalendars();
-// setInterval(refreshCalendars, 30 * 1000);
-
+exports.updateInterval = 60 * 1000; // 1 minute
 exports.update = function(callback) {
   refreshCalendars(callback);
 }
@@ -84,7 +79,7 @@ function refreshCalendars(callback) {
     }
   , function (err, response, body) {
       // check for a failed token
-      if (response.statusCode == 401) {
+      if (response && response.statusCode == 401) {
         console.log("calendar - auth failed fetching a new token");
         refreshToken(function(err) {
           if (err) return callback(err);
@@ -93,12 +88,14 @@ function refreshCalendars(callback) {
         });
         return;
       }
-      // catch other errors.
       else if (err) return callback(err);
 
       data = JSON.parse(body);
+      if (!data) {
+        callback("Couldn't parse JSON");
+      }
 
-      freebusy = {};
+      var freebusy = {};
       Object.keys(cals).forEach(function(name) {
         var id = cals[name];
         freebusy[name] = parseFreeBusy(data.calendars[id].busy);

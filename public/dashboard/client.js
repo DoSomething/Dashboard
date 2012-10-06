@@ -266,10 +266,10 @@ socket.on('followers_count', function(data) {
 
 /* ------------- Github ------------- */
 socket.on('recent_commits', function(data) {
-    if(data.waiting_commits == 1) {
-        $("#waiting_commits").text(data.waiting_commits + " commit");
+    if(data == 1) {
+        $("#waiting_commits").text(data + " commit");
     } else {
-        $("#waiting_commits").text(data.waiting_commits + " commits");
+        $("#waiting_commits").text(data + " commits");
     }
 });
 
