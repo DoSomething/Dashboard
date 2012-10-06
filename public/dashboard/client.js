@@ -195,50 +195,50 @@ socket.on('twitter_stream', function(data) {
 /* ------------- Greeting ------------- */
 $(document).ready(function() {
     function setWelcome() {
-        var date = new Date();
-        var today = date.getDay();
-        switch(today) {
-            case 0: today = "Sunday"; break;
-            case 1: today = "Monday"; break;
-            case 2: today = "Tuesday"; break;
-            case 3: today = "Wednedsay"; break;
-            case 4: today = "Thursday"; break;
-            case 5: today = "Friday"; break;
-            case 6: today = "Saturday"; break;
+        var date = new Date(),
+            day = date.getDate(),
+            month = date.getMonth(),
+            year = date.getFullYear(),
+            hours = date.getHours(),
+            dateNextHour = new Date(year, month, day, hours + 1, 0, 0, 0),
+            dayName,
+            monthName;
+
+        switch(day) {
+            case 0: dayName = "Sunday"; break;
+            case 1: dayName = "Monday"; break;
+            case 2: dayName = "Tuesday"; break;
+            case 3: dayName = "Wednedsay"; break;
+            case 4: dayName = "Thursday"; break;
+            case 5: dayName = "Friday"; break;
+            case 6: dayName = "Saturday"; break;
         }
 
-        var day = date.getDate();
-        var year = date.getFullYear();
-
-        switch(date.getMonth()) {
-            case 0: month = "January"; break;
-            case 1: month = "February"; break;
-            case 2: month = "March"; break;
-            case 3: month = "April"; break;
-            case 4: month = "May"; break;
-            case 5: month = "June"; break;
-            case 6: month = "July"; break;
-            case 7: month = "August"; break;
-            case 8: month = "September"; break;
-            case 9: month = "October"; break;
-            case 10: month = "November"; break;
-            case 11: month = "December"; break;
+        switch(month) {
+            case 0: monthName = "January"; break;
+            case 1: monthName = "February"; break;
+            case 2: monthName = "March"; break;
+            case 3: monthName = "April"; break;
+            case 4: monthName = "May"; break;
+            case 5: monthName = "June"; break;
+            case 6: monthName = "July"; break;
+            case 7: monthName = "August"; break;
+            case 8: monthName = "September"; break;
+            case 9: monthName = "October"; break;
+            case 10: monthName = "November"; break;
+            case 11: monthName = "December"; break;
         }
-
-        var hours = date.getHours();
 
         if((hours <= 6) || (hours >= 20)) {
             $("body").addClass("night");
-            $("#welcome_message").html("<strong>Go to sleep!</strong> " + month + " " + day + " " + year);
+            $("#welcome_message").html("<strong>Go to sleep!</strong> " + monthName + " " + dayName + " " + year);
         } else {
             $("body").removeClass("night");
-            $("#welcome_message").html("<strong>Happy " + today + "!</strong> " + month + " " + day + " " + year);
+            $("#welcome_message").html("<strong>Happy " + dayName + "!</strong> " + monthName + " " + dayName + " " + year);
         }
 
-        nextHour = getTimeAtNextHour();
-        timeUntilNextHour = nextHour - new Date();
-
-        setTimeout(setWelcome, timeUntilNextHour);
+        // Update the time next hour
+        setTimeout(setWelcome, dateNextHour - date);
     }
 
     setWelcome();
@@ -397,15 +397,6 @@ function delimitNumbers(str) {
   return (str + "").replace(/\b(\d+)((\.\d+)*)\b/g, function(a, b, c) {
     return (b.charAt(0) > 0 && !(c || ".").lastIndexOf(".") ? b.replace(/(\d)(?=(\d{3})+$)/g, "$1,") : b) + c;
   });
-}
-
-function getTimeAtNextHour() {
-  var t = new Date();
-  t.setHours(t.getHours + 1);
-  t.setMinutes(0);
-  t.setSeconds(0);
-  t.setMilliseconds(0);
-  return t;
 }
 
 $.fn.changeTimeago = function(isotime) {
