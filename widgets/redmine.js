@@ -22,6 +22,8 @@ exports.update = function(callback) {
     ,  closed_issues: function(cb) { refresh_issues('c', cb); }
     }
   , function(err, results) {
+      if (err) return callback(err);
+
       results.sprint_name = current_sprint.name;
       console.log("redmine - open:", results.open_issues, " closed:", results.closed_issues)
       callback(null, {redmine: results});
@@ -68,7 +70,7 @@ function find_current_sprint(callback) {
       });
 
       // ...and the first one left should be it.
-      if (!current) return callback("It seems like there's no sprint scheduled.")
+      if (!versions[0]) return callback("It seems like there's no sprint scheduled.")
       current = versions[0];
 
       console.log("redmine - working on", current.name, '- id:', current.id);
