@@ -22,7 +22,6 @@ config.members.MAILCHIMP_API_KEY = ''
 
 config.redmine = {};
 config.redmine.API_KEY = ''
-config.redmine.CURRENT_SPRINT_ID = ''
 
 config.twitter = {}
 config.twitter.CONSUMER_KEY = ''

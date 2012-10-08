@@ -297,6 +297,7 @@ socket.on('redmine', function(data) {
 
     $("#open_tickets").text(open_str);
     $("#closed_tickets").text(closed_str);
+    $("#sprint_name").text(data.sprint_name);
 });
 
 /* ------------- Calendar ------------- */
