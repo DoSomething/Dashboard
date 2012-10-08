@@ -52,21 +52,21 @@ function refreshToken(callback) {
 
 /** Refresh free/busy information from the Google Calendar API. */
 function refreshCalendars(callback) {
-  var date = new Date();
-  var now = date.toISOString();
-  var endOfDay = now.substr(0, 11) + "23:59:59" + now.substr(19);
+  var now = new Date()
+    , endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)
+    ;
 
   // construct POST data
   var post_data = {
-    "timeMin": now,
-    "timeMax": endOfDay,
+    "timeMin": now.toISOString(),
+    "timeMax": endOfDay.toISOString(),
     "items":[],
   };
   Object.keys(cals).forEach(function(name) {
     post_data.items.push({id: cals[name]});
   });
 
-  console.log("calendar - fetching between " + now + " and " + endOfDay);
+  console.log("calendar - fetching between now and " + endOfDay);
 
   request(
     { uri: 'https://www.googleapis.com/calendar/v3/freeBusy/'
