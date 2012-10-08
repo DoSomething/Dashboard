@@ -131,9 +131,11 @@ widgets.forEach(function (widgetName) {
       return;
     }
     Object.keys(response).forEach(function(name) {
-      // Keep track of what we've sent out.
-      lastUpdates[name] = response[name];
-      io.sockets.emit(name, response[name]);
+      // Don't waste bandwidth repeating outselves.
+      if (response[name] != lastUpdates[name]) {
+        io.sockets.emit(name, response[name]);
+        lastUpdates[name] = response[name];
+      }
     });
   });
 
