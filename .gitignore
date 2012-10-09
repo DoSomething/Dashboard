@@ -1,4 +1,5 @@
 ## general node stuff
+node_modules
 lib-cov
 *.seed
 *.log
@@ -11,9 +12,11 @@ lib-cov
 pids
 logs
 results
-
 npm-debug.log
 
 
 ## ignore configuration file
 config.js
+
+## OS X specific
+.DS_Store
