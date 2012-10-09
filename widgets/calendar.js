@@ -38,13 +38,13 @@ function refreshToken(callback) {
       if (err) return callback(err);
 
       data = JSON.parse(body);
-      if (data.access_token != undefined) {
-        access_token = data.access_token;
+      if (!data || !data.access_token) return callback("Couldn't parse token's JSON.");
 
-        if (previous_token != access_token) {
-          console.log("calendar - got a new token");
-          callback(err, access_token);
-        }
+      access_token = data.access_token;
+
+      if (previous_token != access_token) {
+        console.log("calendar - got a new token");
+        callback(null, access_token);
       }
     }
   );
@@ -116,48 +116,28 @@ function refreshCalendars(callback) {
 //   'until': 'tomorrow'
 // }
 function parseFreeBusy(freebusyArray) {
-  if (freebusyArray.length === 0) {
-    // no events for the rest of the day
-    return {
-      'status': 'free',
-      'until': 'tomorrow'
+  var length = freebusyArray.length;
+
+  // No events means it's free for the rest of the day.
+  if (length === 0) {
+    return { 'status': 'free', 'until': 'tomorrow' };
+  }
+
+  // Is it already in use?
+  if (new Date() < new Date(freebusyArray[0].start)) {
+    return { 'status': 'free', 'until': freebusyArray[0].start };
+  }
+
+  // It'll definitely be free after the last event...
+  var endTime = freebusyArray[length - 1].end;
+  // ...now see if there's an opening before that...
+  for (var i = 0; i < length - 1; i++) {
+    if (freebusyArray[i].end != freebusyArray[i + 1].start) {
+      // Found a gap.
+      endTime = freebusyArray[i].end;
+      break;
     }
   }
 
-  // there are events, let's check them out
-
-  // first, let's see if this room is in-use or not...
-  var now = new Date();
-  var startTime = new Date(freebusyArray[0].start);
-
-  if(startTime < now) {
-    // There's an event in progress!
-    for(var i = 0; i < freebusyArray.length; i++) {
-      if(i == freebusyArray.length - 1) {
-        // Forced end of contiguous events.
-        endTime = freebusyArray[i].end;
-
-        break;
-      }
-
-      if(freebusyArray[i].end == freebusyArray[i+1].start) {
-        // Found a contiguous block of events. Looping until it ends.
-      } else {
-        // Found the end of the contiguous events.
-        endTime = freebusyArray[i].end;
-
-        break;
-      }
-    }
-
-    return {
-      'status': 'inuse',
-      'until': endTime
-    };
-  }
-
-  return {
-    'status': 'free',
-    'until': freebusyArray[0].start
-  };
+  return { 'status': 'inuse', 'until': endTime };
 }
