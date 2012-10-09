@@ -48,12 +48,12 @@ function get_darksky_forecast(callback) {
         current_condition = "clear";
       }
 
-      console.log("weather -", latestForecast.currentTemp, current_condition, ':', forecast_summary);
+      console.log("weather - %d°F %s/%s", latestForecast.currentTemp, current_condition, forecast_summary);
 
       callback(null, { 'darksky_forecast':
         { temperature: latestForecast.currentTemp
-        , forecast: forecast_summary
         , condition: current_condition
+        , forecast: forecast_summary
         }
       });
     }

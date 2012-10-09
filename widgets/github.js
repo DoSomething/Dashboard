@@ -29,7 +29,7 @@ function findDeployDate(callback) {
     for (var i = 0, l = articles.length; i < l; i++) {
       var article = articles[i];
       if (article.title && article.title.match(/^\[deployment\]/)) {
-        console.log("newrelic - last deployment was", article.date);
+        console.log("newrelic - last deployment was %s", article.date);
         return callback(null, article.date);
       }
     };
@@ -63,7 +63,7 @@ function getGitCommits(lastPush, callback) {
       }
     }
 
-    console.log("github - found", waitingCommits, "commit(s) to be deployed");
+    console.log("github - found %d commit(s) to be deployed", waitingCommits);
     callback(null, {
       'recent_commits': waitingCommits
     , 'code_push': lastPush.toISOString()

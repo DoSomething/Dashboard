@@ -17,7 +17,7 @@ exports.update = function(callback) {
     if (err) return callback(err);
 
     if (data && data.followers_count) {
-      console.log('twitter -', data.followers_count, 'followers');
+      console.log('twitter - %d followers', data.followers_count);
       callback(null, {'followers_count': data.followers_count});
     } else {
       callback("WARNING: Couldn't read follower count from Twitter API. Received:", data);
@@ -31,7 +31,7 @@ exports.stream = function(io) {
   /** Uses twit to connect to the Twitter Streaming API and pull any tweets mentioning DS. */
   var twitter_stream = twitter.stream('statuses/filter', { track: '@dosomething' });
   twitter_stream.on('tweet', function(tweet) {
-    console.log("twitter - tweet by " + tweet.user.screen_name + " : " + tweet.text);
+    console.log("twitter - “%s” %s", tweet.text, tweet.user.screen_name);
 
     var t = {
       'text': tweet.text,

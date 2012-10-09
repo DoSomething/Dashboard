@@ -59,7 +59,7 @@ var io = require('socket.io').listen(server);
 var numConnections = 0;
 
 server.listen(app.get('port'), function(){
-  console.log("app - server listening on port " + app.get('port'));
+  console.log("app - server listening on port %d", app.get('port'));
 });
 
 var Session = require('connect').middleware.session.Session;
@@ -99,11 +99,11 @@ io.on('connection', function(socket) {
   }
 
   numConnections++;
-  console.log("app - A socket has connected! " + numConnections + " users connected.");
+  console.log("app - A socket has connected! %d users connected.", numConnections);
 
   socket.on('disconnect', function() {
     numConnections--;
-    console.log("app - A socket has disconnected! " + numConnections + " users connected.");
+    console.log("app - A socket has disconnected! %d users connected.", numConnections);
   })
 });
 
@@ -127,7 +127,7 @@ widgets.forEach(function (widgetName) {
     setTimeout(function() { widget.update(handler) }, widget.updateInterval || 60 * 1000);
 
     if (err) {
-      console.log(widget.name, "- update failed", err, response);
+      console.log("%s - update failed: %s", widget.name, err);
       return;
     }
     Object.keys(response).forEach(function(name) {

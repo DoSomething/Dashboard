@@ -25,7 +25,7 @@ exports.update = function(callback) {
       if (err) return callback(err);
 
       results.sprint_name = current_sprint.name;
-      console.log("redmine - open:", results.open_issues, " closed:", results.closed_issues)
+      console.log("redmine - open: %d closed: %d", results.open_issues, results.closed_issues)
       callback(null, {redmine: results});
     }
   );
@@ -73,7 +73,7 @@ function find_current_sprint(callback) {
       if (!versions[0]) return callback("It seems like there's no sprint scheduled.")
       current = versions[0];
 
-      console.log("redmine - working on", current.name, '- id:', current.id);
+      console.log("redmine - working on %s (id: %d)", current.name, current.id);
       callback(null, current);
     }
   );

@@ -66,8 +66,6 @@ function refreshCalendars(callback) {
     post_data.items.push({id: cals[name]});
   });
 
-  console.log("calendar - fetching between now and " + endOfDay);
-
   request(
     { uri: 'https://www.googleapis.com/calendar/v3/freeBusy/'
     , method: 'POST'
@@ -80,7 +78,7 @@ function refreshCalendars(callback) {
   , function (err, response, body) {
       // check for a failed token
       if (response && response.statusCode == 401) {
-        console.log("calendar - auth failed fetching a new token");
+        console.log("calendar - auth failed, fetching a new token");
         refreshToken(function(err) {
           if (err) return callback(err);
 
@@ -91,16 +89,19 @@ function refreshCalendars(callback) {
       else if (err) return callback(err);
 
       data = JSON.parse(body);
-      if (!data) {
-        callback("Couldn't parse JSON");
-      }
+      if (!data) return callback("Couldn't parse JSON");
 
-      var freebusy = {};
+      var result = {};
       Object.keys(cals).forEach(function(name) {
-        var id = cals[name];
-        freebusy[name] = parseFreeBusy(data.calendars[id].busy);
+        result[name] = parseFreeBusy(data.calendars[cals[name]].busy);
+
+        var printable = result[name].until;
+        if (printable !== "tomorrow") {
+          printable = (new Date(printable)).toLocaleTimeString();
+        }
+        console.log("calendar - %s is %s until %s", name, result[name].status, printable);
       });
-      callback(null, {'calendar': freebusy});
+      callback(null, {'calendar': result});
     }
   );
 }

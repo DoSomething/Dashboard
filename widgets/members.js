@@ -47,7 +47,7 @@ function refreshMobileCommons(callback) {
 
         var raw_count = window.$(".subscribers-a p span").text();
         var mobilecommons_count = parseInt(raw_count.replace(/,/g, ''));
-        console.log("members - mobilecommons: " + mobilecommons_count);
+        console.log("members - mobilecommons: %d", mobilecommons_count);
         // Release the memory.
         window.close();
         callback(null, mobilecommons_count);
@@ -69,7 +69,7 @@ function refreshMailchimp(callback) {
 
     var latest = data[data.length - 1];
     var mailchimp_count = parseInt(latest.existing) + parseInt(latest.imports) + parseInt(latest.optins);
-    console.log("members - mailchimp: " + mailchimp_count);
+    console.log("members - mailchimp: %d", mailchimp_count);
 
     callback(null, mailchimp_count);
   });

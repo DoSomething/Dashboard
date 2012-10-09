@@ -10,7 +10,7 @@ exports.update = function(callback) {
       if (err) return callback(err);
 
       data = JSON.parse(body);
-      console.log('facebook -', data.likes, 'likes');
+      console.log('facebook - %d likes', data.likes);
       callback(null, {'likes_count': data.likes});
     }
   );
