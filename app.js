@@ -20,7 +20,7 @@ var MemoryStore = express.session.MemoryStore,
    sessionStore = new MemoryStore();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 3648);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon(__dirname + '/public/favicon.ico', { maxAge: 2592000000 }));
