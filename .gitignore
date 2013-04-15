@@ -1,19 +1,8 @@
-## general node stuff
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
+# OS X
+*DS_STORE
 
-pids
-logs
-results
+# Bundler
+/Gemfile.lock
 
-npm-debug.log
-
-
-## ignore configuration file
-config.js
+# SASS
+.sass-cache/
