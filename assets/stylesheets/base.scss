@@ -1,0 +1,15 @@
+/*
+
+  SASS Import File
+
+  Note: This file MUST be imported using the @import
+  directive in the following locations in order for 
+  SASS variables and mixins to be shared across widgets:
+
+    - application.scss (/<app>/assets/stylesheets/)
+    - <widget>.scss    (/<app>/widgets/<widget>/)
+
+*/
+
+@import "./variables.scss";
+@import "./mixins.scss";
