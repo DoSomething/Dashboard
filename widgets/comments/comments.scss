@@ -10,7 +10,6 @@
 // ----------------------------------------------------------------------------
 // Sass declarations
 // ----------------------------------------------------------------------------
-$background-color:  #eb9c3c;
 
 $title-color:       rgba(255, 255, 255, 0.7);
 $moreinfo-color:    rgba(255, 255, 255, 0.7);
@@ -20,7 +19,7 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
 // ----------------------------------------------------------------------------
 .widget-comments {
 
-  background-color: $background-color;
+  background-color: $bg-comments;
 
   .title {
     color: $title-color;

@@ -10,7 +10,6 @@
 // ----------------------------------------------------------------------------
 // Sass declarations
 // ----------------------------------------------------------------------------
-$background-color:  #12b0c5;
 $value-color:       #fff;
 
 $title-color:       rgba(255, 255, 255, 0.7);
@@ -22,7 +21,7 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
 // ----------------------------------------------------------------------------
 .widget-list {
 
-  background-color: $background-color;
+  background-color: $bg-list;
   vertical-align: top;
 
   .title {
