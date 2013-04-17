@@ -1,22 +1,13 @@
-/*
-
-  NOTE: You must import base.scss to have access to any
-  SASS mixins or variables not defined within this file!
-
-*/
-
-@import "../assets/stylesheets/base.scss";
-
 // ----------------------------------------------------------------------------
 // Sass declarations
 // ----------------------------------------------------------------------------
-$background-color: #18408B;
-  
+$background-color:  #dc5945;
+
 // ----------------------------------------------------------------------------
 // Widget-clock styles
 // ----------------------------------------------------------------------------
 .widget-clock {
 
-  background-color: $nnn;
+  background-color: $background-color;
 
 }
