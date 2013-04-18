@@ -1,0 +1,51 @@
+/*
+ * DIN WEB REGULAR + CONDENSED
+ *
+ */
+
+/* REGULAR */
+
+@font-face {
+  font-family: "din";
+  src: url("DINWeb-Cond.eot");
+  font-style: normal;
+  font-weight: false;
+}
+
+@font-face {
+  font-family: "din";
+  src: url("DINWeb-CondMedium.eot");
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "din";
+  src: url("DINWeb-CondBold.eot");
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* CONDENSED */
+
+@font-face {
+  font-family: "din-cond";
+  src: url("DINWeb-Cond.eot");
+  font-style: normal;
+  font-weight: false;
+}
+
+@font-face {
+  font-family: "din-cond";
+  src: url("DINWeb-CondMedium.eot");
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "din-cond";
+  src: url("DINWeb-CondBold.eot");
+  font-style: normal;
+  font-weight: 600;
+}
+
